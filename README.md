@@ -1,4 +1,4 @@
 MaJiaGuitar
 ===========
 
-MaJia Guitar Lesson
+MaJia Guitar Lesson for Android
