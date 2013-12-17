@@ -6,5 +6,10 @@
     <string name="hello_world">Hello world!</string>
     
     <string name="guitar_music">吉他谱</string>
+    
+    <string name="musics">谱子</string>
+    <string name="favorite">收藏</string>
+    <string name="update">更新</string>
+    <string name="about">关于</string>
 
 </resources>
