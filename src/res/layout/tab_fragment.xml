@@ -18,7 +18,7 @@
             android:src="@drawable/icon_guitar" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/guitarMusicImageView"
@@ -41,7 +41,7 @@
             android:src="@drawable/icon_favorite" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/favoriteImageView"
@@ -64,7 +64,7 @@
             android:src="@drawable/icon_update" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/updateImageView"
@@ -87,7 +87,7 @@
             android:src="@drawable/icon_about" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/aboutImageView"
