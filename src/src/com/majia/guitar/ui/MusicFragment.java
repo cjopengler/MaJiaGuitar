@@ -4,7 +4,9 @@
 package com.majia.guitar.ui;
 
 import com.majia.guitar.R;
+import com.majia.guitar.service.MusicPlayService;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,5 +31,22 @@ public class MusicFragment extends Fragment {
         mGuitarMusicListView.setAdapter(new GuitarMusicListAdapter(this.getActivity()));
         
         return musicView;
+    }
+    
+    @Override
+    public void onDestroyView() {
+        Intent serviceIntent = new Intent(this.getActivity(), MusicPlayService.class);
+        
+        serviceIntent.setAction(MusicPlayService.CMD_STOP);
+        
+        this.getActivity().startService(serviceIntent);
+        
+        super.onDestroyView();
+    }
+    
+    @Override
+    public void onDestroy() {
+        
+        super.onDestroy();
     }
 }

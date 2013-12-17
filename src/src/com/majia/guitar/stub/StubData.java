@@ -37,13 +37,13 @@ public class StubData implements IGuitarData {
     }
 
     private void gennerateData() {
-        MusicEntity musicEntity1 = new MusicEntity(1, 1, "童年", "D Em G Em A D", null, null, null, null, 1, null, null);
+        MusicEntity musicEntity1 = new MusicEntity(1, 1, "童年", "D Em G Em A D", null, null, null, "tonghua.amr", 1, null, null);
         mMusicEntities.add(musicEntity1);
         
-        MusicEntity musicEntity2 = new MusicEntity(2, 2, "哈利欧姆", "Em Am D Em", null, null, null, null, 1, null, null);
+        MusicEntity musicEntity2 = new MusicEntity(2, 2, "哈利欧姆", "Em Am D Em", null, null, null, "moon.amr", 1, null, null);
         mMusicEntities.add(musicEntity2);
         
-        MusicEntity musicEntity3 = new MusicEntity(3, 3, "欢快", "D A D G", null, null, null, null, 1, null, null);
+        MusicEntity musicEntity3 = new MusicEntity(3, 3, "欢快", "D A D G", null, null, null, "qianglizhiwai.amr", 1, null, null);
         mMusicEntities.add(musicEntity3);
     }
 

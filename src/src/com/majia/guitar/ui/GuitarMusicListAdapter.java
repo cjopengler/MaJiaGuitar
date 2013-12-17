@@ -8,13 +8,17 @@ import java.util.ArrayList;
 import com.majia.guitar.R;
 import com.majia.guitar.data.IGuitarData;
 import com.majia.guitar.data.MusicEntity;
+import com.majia.guitar.service.MusicPlayService;
 import com.majia.guitar.stub.StubData;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -63,6 +67,20 @@ public class GuitarMusicListAdapter extends BaseAdapter {
         
         TextView musicTextView = (TextView) convertView.findViewById(R.id.musicTextView);
         musicTextView.setText(musicEntity.getMusicAbstract());
+        
+        ImageView songImageView = (ImageView) convertView.findViewById(R.id.songImageView);
+        songImageView.setTag(musicEntity);
+        songImageView.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                MusicEntity musicEntity = (MusicEntity) v.getTag();
+                Uri uri = Uri.parse(musicEntity.getSoundLocal());
+                
+                Intent serviceIntent = new Intent(MusicPlayService.CMD_PLAY, uri, mContext, MusicPlayService.class);
+                mContext.startService(serviceIntent);
+            }
+        });
         
         return convertView;
     }
