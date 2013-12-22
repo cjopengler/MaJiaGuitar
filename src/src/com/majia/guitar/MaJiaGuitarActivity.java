@@ -1,7 +1,11 @@
 package com.majia.guitar;
 
+import com.majia.guitar.ui.MusicFragment;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -15,6 +19,12 @@ public class MaJiaGuitarActivity extends FragmentActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
         setContentView(R.layout.activity_ma_jia_guitar);
+        
+        
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.add(R.id.content_container, MusicFragment.newInstance());
+        ft.commit();
     }
 
 }

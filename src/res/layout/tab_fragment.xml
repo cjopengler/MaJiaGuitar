@@ -6,6 +6,7 @@
     android:orientation="horizontal" >
 
     <RelativeLayout
+        android:id="@+id/guitarMusicsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
@@ -29,6 +30,7 @@
     </RelativeLayout>
     
     <RelativeLayout
+        android:id="@+id/favoriateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
@@ -52,6 +54,7 @@
     </RelativeLayout>
     
     <RelativeLayout
+        android:id="@+id/updatLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
@@ -75,6 +78,7 @@
     </RelativeLayout>
     
     <RelativeLayout
+        android:id="@+id/aboutLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >

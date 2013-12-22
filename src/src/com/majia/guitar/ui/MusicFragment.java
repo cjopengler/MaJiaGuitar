@@ -23,6 +23,10 @@ public class MusicFragment extends Fragment {
     
     private ListView mGuitarMusicListView;
     
+    public static MusicFragment newInstance() {
+        return new MusicFragment();
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View musicView = inflater.inflate(R.layout.music_fragment, container, false);
