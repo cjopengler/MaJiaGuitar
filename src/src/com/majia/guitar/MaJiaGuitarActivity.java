@@ -1,5 +1,6 @@
 package com.majia.guitar;
 
+
 import com.majia.guitar.ui.MusicFragment;
 
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class MaJiaGuitarActivity extends FragmentActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.content_container, MusicFragment.newInstance());
         ft.commit();
+        
     }
 
 }

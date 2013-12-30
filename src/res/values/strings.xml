@@ -20,5 +20,6 @@
     <string name="downloading">正在下载</string>
     <string name="version">版本:%1$</string>
     <string name="software">软件</string>
+    <string name="download_finish">下载完成</string>
 
 </resources>
