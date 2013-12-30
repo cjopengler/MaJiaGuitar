@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 /**
@@ -22,6 +24,9 @@ import android.widget.Button;
  * @since 2013-12-22
  */
 public class UpdateFragment extends Fragment {
+    private TextView mDownloadPercentTextView;
+    private ProgressBar mDownloadProgressBar;
+    
     public static UpdateFragment newInstance() {
         return new UpdateFragment();
     }
@@ -40,6 +45,9 @@ public class UpdateFragment extends Fragment {
                 getActivity().startService(downloadServiceIntent);
             }
         });
+        
+        mDownloadPercentTextView = (TextView) updateView.findViewById(R.id.downloadPercentTextView);
+        mDownloadProgressBar = (ProgressBar) updateView.findViewById(R.id.downloadProgressBar);
         
         
         return updateView;
