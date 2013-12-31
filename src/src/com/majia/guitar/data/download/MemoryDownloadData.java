@@ -38,20 +38,23 @@ public class MemoryDownloadData extends AbstractDownloadData {
     }
     
     private void notifyListeners() {
-       ListIterator<IDownloadListener> iterator = mDownloadListeners.listIterator();
-       
-       while (iterator.hasNext()) {
-        IDownloadData.IDownloadListener downloadListener = (IDownloadData.IDownloadListener) iterator.next();
-        downloadListener.onDownload(0, mDownloadInfo);
-    }
-       
+        
+        ListIterator<IDownloadListener> iterator = mDownloadListeners.listIterator();
+
+        while (iterator.hasNext()) {
+            IDownloadData.IDownloadListener downloadListener = (IDownloadData.IDownloadListener) iterator.next();
+            downloadListener.onDownload(0, mDownloadInfo);
+        }
+
     }
     
     
     @Override
     public DownloadInfo getCurDownloadInfo() {
-        
-        return mDownloadInfo;
+        mLock.lock();
+        DownloadInfo downloadInfo = mDownloadInfo;
+        mLock.unlock();
+        return downloadInfo;
     }
 
     @Override

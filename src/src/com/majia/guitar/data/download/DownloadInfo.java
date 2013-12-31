@@ -10,8 +10,9 @@ package com.majia.guitar.data.download;
  */
 public class DownloadInfo {
     public static final int IDEL_STATUS = 0;
-    public static final int DOWNLOADING_STATUS = 1;
-    public static final int DOWNLOAD_FINISH_STATUS = 2;
+    public static final int DOWNLOAD_START_STATUS = 1;
+    public static final int DOWNLOADING_STATUS = 2;
+    public static final int DOWNLOAD_FINISH_STATUS = 3;
     
     private final int mStatus;
     

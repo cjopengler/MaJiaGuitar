@@ -5,10 +5,15 @@ package com.majia.guitar.ui;
 
 
 import com.majia.guitar.R;
+import com.majia.guitar.data.download.DownloadInfo;
+import com.majia.guitar.data.download.IDownloadData;
+import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
+import com.majia.guitar.data.download.MemoryDownloadData;
 import com.majia.guitar.service.DownloadService;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +28,11 @@ import android.widget.TextView;
  * @author panxu
  * @since 2013-12-22
  */
-public class UpdateFragment extends Fragment {
+public class UpdateFragment extends Fragment implements IDownloadListener {
     private TextView mDownloadPercentTextView;
     private ProgressBar mDownloadProgressBar;
+    private Button mApkUpdateButton;
+    private Handler mUiHandler;
     
     public static UpdateFragment newInstance() {
         return new UpdateFragment();
@@ -35,8 +42,10 @@ public class UpdateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View updateView = inflater.inflate(R.layout.update_fragment, container, false);
         
-        Button apkUpdateButton = (Button) updateView.findViewById(R.id.apkUpdatebutton);
-        apkUpdateButton.setOnClickListener(new View.OnClickListener() {
+        mUiHandler = new Handler();
+        
+        mApkUpdateButton = (Button) updateView.findViewById(R.id.apkUpdatebutton);
+        mApkUpdateButton.setOnClickListener(new View.OnClickListener() {
             
             @Override
             public void onClick(View v) {
@@ -49,7 +58,72 @@ public class UpdateFragment extends Fragment {
         mDownloadPercentTextView = (TextView) updateView.findViewById(R.id.downloadPercentTextView);
         mDownloadProgressBar = (ProgressBar) updateView.findViewById(R.id.downloadProgressBar);
         
+        IDownloadData downloadData = MemoryDownloadData.getInstance();
+        DownloadInfo downloadInfo = downloadData.getCurDownloadInfo();
+        setDownloadUi(downloadInfo);
+        
+        downloadData.addListener(this);
         
         return updateView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        IDownloadData downloadData = MemoryDownloadData.getInstance();
+        downloadData.removeListener(this);
+        super.onDestroyView();
+    }
+    
+    @Override
+    public void onDownload(long id, final DownloadInfo downloadInfo) {
+        mUiHandler.post(new Runnable() {
+            
+            @Override
+            public void run() {
+                setDownloadUi(downloadInfo);
+            }
+        });
+    }
+    
+    private void setDownloadUi(DownloadInfo downloadInfo) {
+        
+        switch (downloadInfo.getStatus()) {
+        
+        case DownloadInfo.IDEL_STATUS:
+            mApkUpdateButton.setEnabled(false);
+            mDownloadPercentTextView.setVisibility(View.GONE);
+            mDownloadProgressBar.setVisibility(View.GONE);
+            break;
+        
+        case DownloadInfo.DOWNLOAD_START_STATUS:
+            mApkUpdateButton.setEnabled(true);
+            mDownloadPercentTextView.setVisibility(View.GONE);
+            mDownloadProgressBar.setVisibility(View.GONE);
+            break;
+            
+            
+        case DownloadInfo.DOWNLOADING_STATUS:
+            long downloadSize = downloadInfo.getDownloadSize();
+            long totalSize = downloadInfo.getTotalSize();
+            
+            mApkUpdateButton.setEnabled(false);
+            
+            mDownloadPercentTextView.setVisibility(View.VISIBLE);
+            mDownloadPercentTextView.setText(downloadSize*100 / totalSize + "%");
+            
+            mDownloadProgressBar.setVisibility(View.VISIBLE);
+            mDownloadProgressBar.setMax((int) totalSize);
+            mDownloadProgressBar.setProgress((int) downloadSize);
+            break;
+            
+        case DownloadInfo.DOWNLOAD_FINISH_STATUS:
+            mApkUpdateButton.setEnabled(false);
+            mDownloadPercentTextView.setVisibility(View.GONE);
+            mDownloadProgressBar.setVisibility(View.GONE);
+            break;
+            
+        default:
+            break;
+        }
     }
 }
