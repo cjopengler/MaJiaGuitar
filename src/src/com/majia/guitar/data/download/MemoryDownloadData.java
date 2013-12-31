@@ -60,7 +60,7 @@ public class MemoryDownloadData extends AbstractDownloadData {
     @Override
     public long update(long totalSize, String softwareVersion) {
         DownloadInfo downloadInfo = new DownloadInfo(
-                                            DownloadInfo.DOWNLOADING_STATUS,
+                                            DownloadInfo.DOWNLOAD_START_STATUS,
                                             0, 
                                             totalSize, 
                                             softwareVersion);
@@ -74,7 +74,7 @@ public class MemoryDownloadData extends AbstractDownloadData {
     }
 
     @Override
-    public long update(Long id, long downloadSize) {
+    public long update(long id, long downloadSize) {
         mLock.lock();
         mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOADING_STATUS, 
                                          downloadSize, 
@@ -86,5 +86,22 @@ public class MemoryDownloadData extends AbstractDownloadData {
         
         return 0;
     }
+
+
+    @Override
+    public long finish(long id) {
+        
+        mLock.lock();
+        mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_FINISH_STATUS, 
+                                         mDownloadInfo.getDownloadSize(), 
+                                         mDownloadInfo.getTotalSize(), 
+                                         mDownloadInfo.getVersion());
+        mLock.unlock();
+        
+        notifyListeners();
+        return 0;
+    }
+
+
 
 }

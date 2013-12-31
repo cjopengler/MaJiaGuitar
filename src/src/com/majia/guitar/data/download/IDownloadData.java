@@ -26,7 +26,10 @@ public interface IDownloadData {
      * @param downloadSize 已经下载的大小
      * @return 当前更新的id 作为软件版本的唯一标识
      */
-    long update(Long id, long downloadSize);
+    long update(long id, long downloadSize);
+    
+
+    long finish(long id);
     
     void addListener(IDownloadListener listener);
     void removeListener(IDownloadListener listener);

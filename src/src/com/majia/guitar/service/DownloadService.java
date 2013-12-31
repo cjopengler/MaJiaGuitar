@@ -18,6 +18,8 @@ import com.baidu.inf.iis.bcs.request.GetObjectRequest;
 import com.baidu.inf.iis.bcs.response.BaiduBCSResponse;
 import com.majia.guitar.R;
 import com.majia.guitar.data.bcs.BCSConfiguration;
+import com.majia.guitar.data.download.IDownloadData;
+import com.majia.guitar.data.download.MemoryDownloadData;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -39,6 +41,8 @@ public class DownloadService extends IntentService {
     private static final String SERVICE_NANME = "DownloadService";
     
     private static final int BUFFER_MAX_SIZE = 1024 * 2;
+    
+    private IDownloadData mDownloadData = MemoryDownloadData.getInstance();
     
     
 
@@ -69,6 +73,7 @@ public class DownloadService extends IntentService {
         boolean isDownloadSuccess = false;
         RandomAccessFile apkRandomAccessFile = null;
         InputStream inputStream = null;
+        
 
         try {
             BCSCredentials credentials = new BCSCredentials(BCSConfiguration.accessKey, BCSConfiguration.secretKey);
@@ -80,6 +85,8 @@ public class DownloadService extends IntentService {
             BaiduBCSResponse<DownloadObject> downloadRsp = baiduBCS.getObject(getObjectRequest);
             long totalSize = downloadRsp.getResult().getObjectMetadata().getContentLength();
 
+            mDownloadData.update(totalSize, 0);
+            
             inputStream = downloadRsp.getResult().getContent();
 
             File file = this.getExternalFilesDir(null);
@@ -99,12 +106,14 @@ public class DownloadService extends IntentService {
 
                 int readLength = 0;
 
-                int totalReadLenth = 0;
+                long totalReadLenth = 0;
 
                 while ((readLength = inputStream.read(buffer, 0, BUFFER_MAX_SIZE)) != -1) {
                     apkRandomAccessFile.write(buffer, 0, readLength);
 
                     totalReadLenth += readLength;
+                    
+                    mDownloadData.update(0, totalReadLenth);
                 }
 
                 if (totalReadLenth != totalSize) {
@@ -112,6 +121,7 @@ public class DownloadService extends IntentService {
                 } else {
                     Toast.makeText(this, R.string.download_finish, Toast.LENGTH_LONG).show();
                     isDownloadSuccess = true;
+                    
                 }
 
             }
@@ -147,6 +157,8 @@ public class DownloadService extends IntentService {
         }
         
         if (isDownloadSuccess) {
+            mDownloadData.finish(0);
+            
             File file = this.getExternalFilesDir(null);
 
             String path = file.getPath() + "/" + "yogaguitar.apk";
