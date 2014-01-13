@@ -82,4 +82,10 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/testApkDownloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="下载" />
+
 </LinearLayout>

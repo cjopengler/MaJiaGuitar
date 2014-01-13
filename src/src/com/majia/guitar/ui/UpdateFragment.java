@@ -9,6 +9,7 @@ import com.majia.guitar.data.download.DownloadInfo;
 import com.majia.guitar.data.download.IDownloadData;
 import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
 import com.majia.guitar.data.download.MemoryDownloadData;
+import com.majia.guitar.log.GuitarLog;
 import com.majia.guitar.service.DownloadService;
 
 import android.content.Intent;
@@ -29,10 +30,13 @@ import android.widget.TextView;
  * @since 2013-12-22
  */
 public class UpdateFragment extends Fragment implements IDownloadListener {
+    private static final String TAG = "UpdateFragment";
+    
     private TextView mDownloadPercentTextView;
     private ProgressBar mDownloadProgressBar;
     private Button mApkUpdateButton;
     private Handler mUiHandler;
+    private Button mTestApkDownloadButton;
     
     public static UpdateFragment newInstance() {
         return new UpdateFragment();
@@ -64,6 +68,18 @@ public class UpdateFragment extends Fragment implements IDownloadListener {
         
         downloadData.addListener(this);
         
+        mTestApkDownloadButton = (Button) updateView.findViewById(R.id.testApkDownloadButton);
+        mTestApkDownloadButton.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent downloadServiceIntent = new Intent(getActivity(), DownloadService.class);
+                downloadServiceIntent.setAction(DownloadService.DOWNLOAD_ACTION);
+                getActivity().startService(downloadServiceIntent);
+                
+            }
+        });
+        
         return updateView;
     }
 
@@ -86,6 +102,8 @@ public class UpdateFragment extends Fragment implements IDownloadListener {
     }
     
     private void setDownloadUi(DownloadInfo downloadInfo) {
+        
+        GuitarLog.d(TAG, "donwloadInfo: " + downloadInfo);
         
         switch (downloadInfo.getStatus()) {
         

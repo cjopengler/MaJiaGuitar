@@ -50,4 +50,11 @@ public class DownloadInfo {
         return mVersion;
     }
     
+    @Override
+    public String toString() {
+        return "{status:" + mStatus + 
+                ", downloadSize:" + mDownloadSize + 
+                ", totalSize:" + mTotalSize + 
+                ", version:" + mVersion + "}";
+    }
 }

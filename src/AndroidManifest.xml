@@ -28,6 +28,7 @@
         </activity>
         <service android:name=".service.MusicPlayService"></service>
         <service android:name=".service.DownloadService"></service>
+        <service android:name=".service.DataService"></service>
     </application>
 
 </manifest>

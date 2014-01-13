@@ -13,13 +13,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 2013-12-30
  */
 public class MemoryDownloadData extends AbstractDownloadData {
+    
     private static class InstanceHodler {
         private static MemoryDownloadData sInstance = new MemoryDownloadData();
     }
     
     
     private Lock mLock;
-    private DownloadInfo mDownloadInfo;
+    private volatile DownloadInfo mDownloadInfo;
     
     public static MemoryDownloadData getInstance() {
         return InstanceHodler.sInstance;
@@ -51,9 +52,7 @@ public class MemoryDownloadData extends AbstractDownloadData {
     
     @Override
     public DownloadInfo getCurDownloadInfo() {
-        mLock.lock();
         DownloadInfo downloadInfo = mDownloadInfo;
-        mLock.unlock();
         return downloadInfo;
     }
 
@@ -64,9 +63,7 @@ public class MemoryDownloadData extends AbstractDownloadData {
                                             0, 
                                             totalSize, 
                                             softwareVersion);
-        mLock.lock();
         mDownloadInfo = new DownloadInfo(downloadInfo);
-        mLock.unlock();
         
         notifyListeners();
         
@@ -91,12 +88,10 @@ public class MemoryDownloadData extends AbstractDownloadData {
     @Override
     public long finish(long id) {
         
-        mLock.lock();
         mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_FINISH_STATUS, 
                                          mDownloadInfo.getDownloadSize(), 
                                          mDownloadInfo.getTotalSize(), 
                                          mDownloadInfo.getVersion());
-        mLock.unlock();
         
         notifyListeners();
         return 0;

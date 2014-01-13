@@ -44,7 +44,6 @@ public class DownloadService extends IntentService {
     
     private IDownloadData mDownloadData = MemoryDownloadData.getInstance();
     
-    
 
     /**
      * @param name
@@ -85,7 +84,7 @@ public class DownloadService extends IntentService {
             BaiduBCSResponse<DownloadObject> downloadRsp = baiduBCS.getObject(getObjectRequest);
             long totalSize = downloadRsp.getResult().getObjectMetadata().getContentLength();
 
-            mDownloadData.update(totalSize, 0);
+            mDownloadData.update(totalSize, "0");
             
             inputStream = downloadRsp.getResult().getContent();
 
