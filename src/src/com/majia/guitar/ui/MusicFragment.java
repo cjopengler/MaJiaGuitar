@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 /**
  * 
@@ -23,6 +24,8 @@ public class MusicFragment extends Fragment {
     
     private ListView mGuitarMusicListView;
     
+    private ProgressBar mLoadingProgressBar;
+    
     public static MusicFragment newInstance() {
         return new MusicFragment();
     }
@@ -31,10 +34,24 @@ public class MusicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View musicView = inflater.inflate(R.layout.music_fragment, container, false);
         
+        mLoadingProgressBar = (ProgressBar) musicView.findViewById(R.id.loadingProgressBar);
+        
         mGuitarMusicListView = (ListView) musicView.findViewById(R.id.guitarMusicListView);
-        mGuitarMusicListView.setAdapter(new GuitarMusicListAdapter(this.getActivity()));
+        //mGuitarMusicListView.setAdapter(new GuitarMusicListAdapter(this.getActivity()));
         
         return musicView;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+    }
+    
+    @Override
+    public void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
     }
     
     @Override

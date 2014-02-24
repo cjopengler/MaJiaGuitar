@@ -13,5 +13,7 @@ import java.util.ArrayList;
 public interface IGuitarData {
     void updateMusics();
     ArrayList<MusicEntity> query();
-    void updateVersion();
+    void updateVersion(Versions versions);
+    Versions getVersions();
+
 }

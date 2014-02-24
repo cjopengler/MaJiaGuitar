@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import com.majia.guitar.data.IGuitarData;
 import com.majia.guitar.data.MusicEntity;
+import com.majia.guitar.data.Version;
+import com.majia.guitar.data.Versions;
 
 /**
  * 
@@ -67,9 +69,18 @@ public class StubData implements IGuitarData {
 
 
     @Override
-    public void updateVersion() {
+    public Versions getVersions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void updateVersion(Versions versions) {
+        // TODO Auto-generated method stub
         
     }
+
+   
     
   
 }
