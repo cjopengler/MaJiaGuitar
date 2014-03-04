@@ -43,7 +43,7 @@ public class UpdateService extends IntentService {
         if (versions == null) {
             //
         } else {
-            //写入数据库
+            //写入数据
             GuitarData.getInstance().updateVersion(versions);
         }
     }

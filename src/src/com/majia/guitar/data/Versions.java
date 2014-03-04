@@ -21,6 +21,11 @@ public final class Versions {
         
     }
     
+    public Versions(Version musicVersion, Version apkVersion) {
+        mMusicVersion = musicVersion;
+        mApkVersion = apkVersion;
+    }
+    
     public Version getMusicVersion() {
         return mMusicVersion;
     }

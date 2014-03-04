@@ -19,6 +19,7 @@ import com.majia.guitar.util.HttpUtil;
 public class RemoteMusicServer {
     
     private static final String VERSION_URL = "http://yogaguitar.duapp.com/version.php";
+    private static final String QUERY_MUSICS_URL = "http://yogaguitar.duapp.com/musics.php";
     
     private RemoteMusicServer() {
         
@@ -32,13 +33,13 @@ public class RemoteMusicServer {
             VersionJson versionJson = HttpUtil.executeForJsonObject(request, VersionJson.class);
             versions = new Versions(versionJson);
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
         return versions;
     }
+    
+    
 }

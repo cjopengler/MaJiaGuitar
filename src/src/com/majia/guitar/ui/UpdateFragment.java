@@ -11,7 +11,10 @@ import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
 import com.majia.guitar.data.download.MemoryDownloadData;
 import com.majia.guitar.log.GuitarLog;
 import com.majia.guitar.service.DownloadService;
+import com.majia.guitar.data.GuitarData;
+import com.majia.guitar.data.Version;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,12 +27,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+
 /**
  * 
  * @author panxu
  * @since 2013-12-22
  */
-public class UpdateFragment extends Fragment implements IDownloadListener {
+public class UpdateFragment extends Fragment implements IDownloadListener,
+                                                        GuitarData.IGuitarDataListener {
     private static final String TAG = "UpdateFragment";
     
     private TextView mDownloadPercentTextView;
@@ -40,6 +45,13 @@ public class UpdateFragment extends Fragment implements IDownloadListener {
     
     public static UpdateFragment newInstance() {
         return new UpdateFragment();
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        GuitarData.getInstance().addListener(this);
     }
     
     @Override
@@ -88,6 +100,12 @@ public class UpdateFragment extends Fragment implements IDownloadListener {
         IDownloadData downloadData = MemoryDownloadData.getInstance();
         downloadData.removeListener(this);
         super.onDestroyView();
+    }
+    
+    @Override
+    public void onDetach() {
+        GuitarData.getInstance().removeListener(this);
+        super.onDetach();
     }
     
     @Override
@@ -143,5 +161,11 @@ public class UpdateFragment extends Fragment implements IDownloadListener {
         default:
             break;
         }
+    }
+
+    @Override
+    public void onUpdateVersion(Version oldMusicVersion, Version newMusicVersion, Version oldApkVersion,
+            Version newApkVersion) {
+        
     }
 }

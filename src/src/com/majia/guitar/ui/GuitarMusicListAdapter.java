@@ -4,6 +4,7 @@
 package com.majia.guitar.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.majia.guitar.R;
 import com.majia.guitar.data.IGuitarData;
@@ -35,6 +36,13 @@ public class GuitarMusicListAdapter extends BaseAdapter {
         mContext = context;
         IGuitarData guitarData = StubData.getInstance();
         mMusicEntities = guitarData.query();
+    }
+    
+    public void update(List<MusicEntity> musicEntities) {
+        mMusicEntities.clear();
+        mMusicEntities.addAll(musicEntities);
+        
+        notifyDataSetChanged();
     }
     
     @Override
