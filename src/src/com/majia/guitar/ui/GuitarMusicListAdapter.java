@@ -30,7 +30,7 @@ import android.widget.TextView;
 public class GuitarMusicListAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final ArrayList<MusicEntity> mMusicEntities;
+    private final List<MusicEntity> mMusicEntities;
     
     public GuitarMusicListAdapter(Context context) {
         mContext = context;

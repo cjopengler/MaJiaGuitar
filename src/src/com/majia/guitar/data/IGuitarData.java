@@ -3,7 +3,7 @@
  */
 package com.majia.guitar.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public interface IGuitarData {
     void updateMusics();
-    ArrayList<MusicEntity> query();
+    List<MusicEntity> query();
     void updateVersion(Versions versions);
     Versions getVersions();
 

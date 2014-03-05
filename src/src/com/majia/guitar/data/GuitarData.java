@@ -4,6 +4,7 @@
 package com.majia.guitar.data;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -12,6 +13,7 @@ import com.majia.guitar.MaJiaGuitarApplication;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -74,8 +76,79 @@ public class GuitarData implements IGuitarData {
     }
 
     @Override
-    public ArrayList<MusicEntity> query() {
-        return null;
+    public List<MusicEntity> query() {
+        List<MusicEntity> musicEntities = RemoteMusicServer.getMusics();
+        List<MusicEntity> retMusicEntities = new ArrayList<MusicEntity>();
+        
+        if (musicEntities != null) {
+            SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
+            
+            for (MusicEntity musicEntity : musicEntities) {
+                ContentValues contentValues = new ContentValues();
+                
+                contentValues.put(DataOpenHelper.MusicColumn.DETAIL, 
+                        musicEntity.getDetail());
+                contentValues.put(DataOpenHelper.MusicColumn.DETAIL_IMG_LOCAL, 
+                        musicEntity.getDetailUrl());
+                
+                contentValues.put(DataOpenHelper.MusicColumn.DIFFICULTY, 
+                        musicEntity.getDifficulty());
+                contentValues.put(DataOpenHelper.MusicColumn.MUSIC_ABSTRACT, 
+                        musicEntity.getMusicAbstract());
+                contentValues.put(DataOpenHelper.MusicColumn.MUSIC_ID, 
+                        musicEntity.getMusicId());
+                contentValues.put(DataOpenHelper.MusicColumn.NAME, 
+                        musicEntity.getName());
+                
+                contentValues.put(DataOpenHelper.MusicColumn.SOUND_URL, 
+                        musicEntity.getSoundUrl());
+                
+                contentValues.put(DataOpenHelper.MusicColumn.VIDEO_URL, 
+                        musicEntity.getVideoUrl());
+                
+                
+                database.replace(DataOpenHelper.GUITAR_MUSIC_TABLE, 
+                        "", 
+                        contentValues);
+            }
+            
+            
+            Cursor cursor = null;
+            
+            try {
+                cursor = database.query(DataOpenHelper.GUITAR_MUSIC_TABLE, null, null, null, null, null, null);
+                
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(cursor.getColumnIndex(DataOpenHelper.MusicColumn.ID));
+                    long musicId = cursor.getLong(cursor.getColumnIndex(DataOpenHelper.MusicColumn.MUSIC_ID));
+                    String name = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.NAME));
+                    String musicAbstract = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.MUSIC_ABSTRACT));
+                    String detail = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL));
+                    String detailUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL_IMG_URL));
+                    String detailLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL_IMG_LOCAL));
+                    
+                    String songUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.SOUND_URL));
+                    String songLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.SOUND_LOCAL));
+                    String videoUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.VIDEO_URL));
+                    String videoLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.VIDEO_LOCAL));
+                    int difficulty = cursor.getInt(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DIFFICULTY));
+                    
+                    MusicEntity musicEntity = new MusicEntity(id, musicId, 
+                                                              name, musicAbstract, 
+                                                              detail, detailUrl, detailLocal, 
+                                                              songUrl, songLocal, difficulty, 
+                                                              videoUrl, videoLocal);
+                    
+                    retMusicEntities.add(musicEntity);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+        
+        return retMusicEntities;
     }
 
  
@@ -149,15 +222,29 @@ public class GuitarData implements IGuitarData {
         
         public static final String GUITAR_MUSIC_TABLE = "guitar_musics";
         public static final String VERSION_TABLE = "version";
-        
-        public static final String MUSIC_VERSION_NAME = "musics_version_name";
-        public static final String MUSIC_VERSION_CODE = "musics_version_code";
-        
-        public static final String APK_VERSION_NAME = "apk_version_name";
-        public static final String APK_VERSION_CODE = "apk_version_code";
+
+        public final static class MusicColumn {
+            public static final String ID = "_id";
+            public static final String MUSIC_ID = "music_id";
+            public static final String NAME = "name";
+            public static final String MUSIC_ABSTRACT = "music_abstract";
+            public static final String DETAIL = "detail";
+            public static final String DETAIL_IMG_URL = "detail_img_url";
+            public static final String DETAIL_IMG_LOCAL = "detail_img_local";
+            public static final String SOUND_URL = "sound_url";
+            public static final String SOUND_LOCAL = "sound_local";
+            public static final String VIDEO_URL = "video_url";
+            public static final String VIDEO_LOCAL = "video_local";
+            public static final String DIFFICULTY = "difficulty";
+            
+            private MusicColumn() {
+                
+            }
+        }
+       
         
         private static final int DATABASE_VERSION = 1;
-        private static final String NAME = "musics";
+        private static final String DB_NAME = "musics";
         private Context mContext;
         
 
@@ -168,7 +255,7 @@ public class GuitarData implements IGuitarData {
          * @param version
          */
         public DataOpenHelper(Context context) {
-            super(context, NAME, null, DATABASE_VERSION);
+            super(context, DB_NAME, null, DATABASE_VERSION);
             mContext = context;
         }
 

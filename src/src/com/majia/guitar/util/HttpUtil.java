@@ -17,6 +17,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -77,7 +78,7 @@ public final class HttpUtil {
      * @throws ClientProtocolException 异常
      * @throws IOException 异常
      */
-    public static final <T> T executeForJsonObject(HttpUriRequest request, Class<T> classType) throws ClientProtocolException, IOException {
+    public static final <T> T executeForJsonObject(HttpUriRequest request, Class<T> classType) throws ClientProtocolException, IOException, JsonSyntaxException {
         return execute(request, new JsonObjectResonponsHandler<T>(classType));
     }
     
@@ -88,7 +89,7 @@ public final class HttpUtil {
      * @throws ClientProtocolException 异常
      * @throws IOException 异常
      */
-    public static final <T> List<T> executeForJsonArray(HttpUriRequest request) throws ClientProtocolException, IOException {
+    public static final <T> List<T> executeForJsonArray(HttpUriRequest request) throws ClientProtocolException, IOException, JsonSyntaxException {
         return execute(request, new JsonArrayResonponsHandler<T>());
 
     }
@@ -107,7 +108,7 @@ public final class HttpUtil {
         }
         
         @Override
-        public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException, JsonSyntaxException {
             T result = null;
             int statusCode = response.getStatusLine().getStatusCode();
             
@@ -130,7 +131,7 @@ public final class HttpUtil {
     private static final class JsonArrayResonponsHandler<T> implements ResponseHandler<List<T>> {
 
         @Override
-        public List<T> handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public List<T> handleResponse(HttpResponse response) throws ClientProtocolException, IOException, JsonSyntaxException {
             List<T> result = null;
             int statusCode = response.getStatusLine().getStatusCode();
             

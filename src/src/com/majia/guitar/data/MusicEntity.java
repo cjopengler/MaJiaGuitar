@@ -14,6 +14,7 @@ public class MusicEntity {
     private final long music_id;
     private final String name;
     private final String music_abstract;
+    private final String detail;
     private final String detail_url;
     private final String detail_local;
     private final String sound_url;
@@ -22,11 +23,46 @@ public class MusicEntity {
     private final String video_url;
     private final String video_local;
     
+    public MusicEntity(long _id, long music_id, 
+            String name, String music_abstract,
+            String detail,
+           String detail_url, String detail_local,
+           String sound_url, String sound_local,
+           int difficulty,
+           String video_url,
+            String video_local) {
+        
+        this._id = _id;
+        this.music_id = music_id;
+        this.name = name;
+        this.music_abstract = music_abstract;
+        this.detail = detail;
+        this.detail_url = detail_url;
+        this.detail_local = detail_local;
+        this.sound_url = sound_url;
+        this.sound_local = sound_local;
+        this.difficulty = difficulty;
+        this.video_url = video_url;
+        this.video_local = video_local;
+    }
+    
+    public MusicEntity(MusicJson musicJson) {
+        this(0, Long.valueOf(musicJson._id), 
+                musicJson.name, musicJson.music_abstract, 
+                musicJson.detail, 
+                musicJson.detail_img_url, "",
+                musicJson.sound_url, "", 
+                Integer.valueOf(musicJson.difficulty), 
+                musicJson.video_url, 
+                "");
+    }
+    
     public MusicEntity(MusicEntity musicEntity) {
         this(musicEntity._id, 
              musicEntity.music_id, 
              musicEntity.name, 
-             musicEntity.music_abstract, 
+             musicEntity.music_abstract,
+             musicEntity.detail,
              musicEntity.detail_url, 
              musicEntity.detail_local, 
              musicEntity.sound_url, 
@@ -36,25 +72,7 @@ public class MusicEntity {
              musicEntity.video_local);
     }
     
-    public MusicEntity(long _id, long music_id, 
-                        String name, String music_abstract,
-                       String detail_url, String detail_local,
-                       String sound_url, String sound_local,
-                       int difficulty,
-                       String video_url,
-                       String video_local) {
-        this._id = _id;
-        this.music_id = music_id;
-        this.name = name;
-        this.music_abstract = music_abstract;
-        this.detail_url = detail_url;
-        this.detail_local = detail_local;
-        this.sound_url = sound_url;
-        this.sound_local = sound_local;
-        this.difficulty = difficulty;
-        this.video_url = video_url;
-        this.video_local = video_local;
-    }
+    
     
     public final long getId() {
        return _id; 
@@ -98,6 +116,10 @@ public class MusicEntity {
     
     public final int getDifficulty() {
         return difficulty;
+    }
+    
+    public final String getDetail() {
+        return detail;
     }
     
     @Override
