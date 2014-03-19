@@ -44,7 +44,7 @@ public class UpdateService extends IntentService {
             //
         } else {
             //写入数据
-            GuitarData.getInstance().updateVersion(versions);
+            GuitarData.getInstance().updateVersion(versions, true);
         }
     }
 

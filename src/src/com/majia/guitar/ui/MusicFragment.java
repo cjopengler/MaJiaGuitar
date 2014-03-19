@@ -9,6 +9,7 @@ import com.majia.guitar.R;
 import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.service.DataService;
 import com.majia.guitar.service.MusicPlayService;
+import com.majia.guitar.service.DataService.DataBinder;
 import com.majia.guitar.service.DataService.IQueryMusicsCallback;
 
 import android.app.Service;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,6 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
     private DataService mDataService;
     private DataServiceConnection mDataServiceConnection;
     
-    private volatile Handler mUiHandler;
     
     private GuitarMusicListAdapter mMusicListAdapter;
     
@@ -53,8 +54,10 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         View musicView = inflater.inflate(R.layout.music_fragment, container, false);
         
         mLoadingProgressBar = (ProgressBar) musicView.findViewById(R.id.loadingProgressBar);
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
         
         mGuitarMusicListView = (ListView) musicView.findViewById(R.id.guitarMusicListView);
+        mGuitarMusicListView.setVisibility(View.GONE);
         
         mMusicListAdapter = new GuitarMusicListAdapter(this.getActivity());
         mGuitarMusicListView.setAdapter(mMusicListAdapter);
@@ -66,9 +69,13 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
-        mUiHandler = new Handler();
-        getActivity().bindService(new Intent(getActivity(), DataService.class), mDataServiceConnection, Service.BIND_AUTO_CREATE);
+        mDataServiceConnection = new DataServiceConnection();
         
+        boolean result = getActivity().bindService(new Intent(getActivity(), DataService.class), 
+                                   mDataServiceConnection, 
+                                   Service.BIND_AUTO_CREATE);
+        
+        Log.d("TAG", "result is " + result);
     }
     
     @Override
@@ -96,7 +103,6 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
     
     @Override
     public void onDestroy() {
-        mUiHandler = null;
         getActivity().unbindService(mDataServiceConnection);
         super.onDestroy();
     }
@@ -105,29 +111,22 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mDataService = (DataService) service;
+            mDataService = ((DataBinder) service).getDataService();
             
             mDataService.queryMusics(MusicFragment.this);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            
+            Log.d("TAG", "name is " + name);
         }
         
     }
 
     @Override
     public void onMusics(final List<MusicEntity> musics) {
-        if (mUiHandler != null) {
-            mUiHandler.post(new Runnable() {
-                
-                @Override
-                public void run() {
-                    
-                }
-            });
-        }
-        
+        mLoadingProgressBar.setVisibility(View.GONE);
+        mGuitarMusicListView.setVisibility(View.VISIBLE);
+        mMusicListAdapter.update(musics);
     }
 }

@@ -8,12 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+import com.majia.guitar.data.json.MusicJson;
+import com.majia.guitar.data.json.MusicJson.Music;
+import com.majia.guitar.data.json.MusicTempJson;
+import com.majia.guitar.data.json.VersionJson;
 import com.majia.guitar.util.HttpUtil;
+import com.majia.guitar.util.MusicLog;
 
 /**
  * 
@@ -47,11 +59,13 @@ public class RemoteMusicServer {
         return versions;
     }
     
-    public static List<MusicEntity> getMusics() {
+    public static MusicJson getMusics() {
         HttpUriRequest request = new HttpGet(GET_MUSICS_URL);
-        List<MusicJson> musicJsons = null;
+ 
+        MusicJson musicJson = null;
         try {
-            musicJsons = HttpUtil.executeForJsonArray(request);
+            musicJson = HttpUtil.executeForJsonObject(request, MusicJson.class);
+            
         } catch (ClientProtocolException e) {
             
         } catch (JsonSyntaxException e) {
@@ -60,33 +74,43 @@ public class RemoteMusicServer {
            
         }
         
-        List<MusicEntity> musicEntities = null;
-        
-        if (musicJsons != null) {
-            musicEntities = new ArrayList<MusicEntity>(musicJsons.size());
-            
-            for (MusicJson musicJson : musicJsons) {
-                musicEntities.add(new MusicEntity(musicJson));
-            }
-        }
-        
-        return musicEntities;
+        return musicJson;
     }
     
-    public static List<MusicJson> getMusicJsons() {
-        HttpUriRequest request = new HttpGet(GET_MUSICS_URL);
-        List<MusicJson> musicJsons = null;
-        try {
-            musicJsons = HttpUtil.executeForJsonArray(request);
-        } catch (ClientProtocolException e) {
+    
+    
+    private static class MuscJsonListResponseHandler implements ResponseHandler<List<MusicTempJson>> {
+
+        private static final String TAG = "MuscJsonListResponseHandler";
+        
+        @Override
+        public List<MusicTempJson> handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
             
-        } catch (JsonSyntaxException e) {
+            List<MusicTempJson> result = new ArrayList<MusicTempJson>();
             
-        } catch (IOException e) {
-           
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            if (statusCode >= 200 && statusCode < 300) {
+
+                String entity = EntityUtils.toString(response.getEntity(), "UTF-8");
+
+                Gson gson = new Gson();
+
+  
+
+                TypeToken<List<MusicTempJson>> typeToken = new TypeToken<List<MusicTempJson>>() {};
+
+                
+                
+                result = gson.fromJson(entity, typeToken.getType());
+
+            } else {
+                MusicLog.e(TAG, "JsonResonponsHandler: get status error " + statusCode);
+            }
+            
+            return result;
         }
         
-        return musicJsons;
     }
     
     

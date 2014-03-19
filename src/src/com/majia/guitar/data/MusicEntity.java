@@ -3,6 +3,9 @@
  */
 package com.majia.guitar.data;
 
+import com.majia.guitar.data.json.MusicJson.Music;
+import com.majia.guitar.data.json.MusicTempJson;
+
 
 /**
  * 
@@ -46,7 +49,18 @@ public class MusicEntity {
         this.video_local = video_local;
     }
     
-    public MusicEntity(MusicJson musicJson) {
+    public MusicEntity(Music music) {
+        this(0, Long.valueOf(music._id), 
+                music.name, music.music_abstract, 
+                music.detail, 
+                music.detail_img_url, "",
+                music.sound_url, "", 
+                Integer.valueOf(music.difficulty), 
+                music.video_url, 
+                "");
+    }
+    
+    public MusicEntity(MusicTempJson musicJson) {
         this(0, Long.valueOf(musicJson._id), 
                 musicJson.name, musicJson.music_abstract, 
                 musicJson.detail, 
@@ -56,6 +70,8 @@ public class MusicEntity {
                 musicJson.video_url, 
                 "");
     }
+    
+    
     
     public MusicEntity(MusicEntity musicEntity) {
         this(musicEntity._id, 

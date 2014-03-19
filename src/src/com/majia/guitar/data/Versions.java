@@ -3,6 +3,9 @@
  */
 package com.majia.guitar.data;
 
+import com.majia.guitar.data.json.MusicJson.Ver;
+import com.majia.guitar.data.json.VersionJson;
+
 /**
  * 
  * @author panxu
@@ -19,6 +22,15 @@ public final class Versions {
         mApkVersion = new Version(versionJson.apk_version_name, 
                                   Long.parseLong(versionJson.apk_version_code));
         
+    }
+    
+    public Versions(Ver ver) {
+        mMusicVersion = new Version(ver.musics_version_name, 
+                Long.parseLong(ver.musics_version_code));
+
+        mApkVersion = new Version(ver.apk_version_name, 
+              Long.parseLong(ver.apk_version_code));
+
     }
     
     public Versions(Version musicVersion, Version apkVersion) {

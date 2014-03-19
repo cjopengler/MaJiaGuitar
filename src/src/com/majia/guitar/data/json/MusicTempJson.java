@@ -1,14 +1,14 @@
 /*
  * Copyright (C) 2014 Baidu Inc. All rights reserved.
  */
-package com.majia.guitar.data;
+package com.majia.guitar.data.json;
 
 /**
  * 
  * @author panxu
  * @since 2014-3-4
  */
-public class MusicJson {
+public class MusicTempJson {
     public String _id;
     public String name;
     public String music_abstract;

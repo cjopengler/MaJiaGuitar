@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 Baidu Inc. All rights reserved.
  */
-package com.majia.guitar.data;
+package com.majia.guitar.data.json;
 
 /**
  * 

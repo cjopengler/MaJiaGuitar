@@ -75,7 +75,7 @@ public class StubData implements IGuitarData {
     }
 
     @Override
-    public void updateVersion(Versions versions) {
+    public void updateVersion(Versions versions, boolean isNotifyListener) {
         // TODO Auto-generated method stub
         
     }

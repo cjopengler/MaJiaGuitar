@@ -23,6 +23,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 
@@ -58,7 +59,7 @@ public class DataService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new DataBinder();
     }
     
     public class DataBinder extends Binder {
@@ -78,16 +79,28 @@ public class DataService extends Service {
     }
     
     private class QueryMusicsCallable implements Callable<List<MusicEntity>> {
+        private final Handler mUiHandler;
         public final IQueryMusicsCallback mQueryMusicsCallback;
         
         public QueryMusicsCallable(IQueryMusicsCallback queryMusicsCallback) {
             mQueryMusicsCallback = queryMusicsCallback;
+            mUiHandler = new Handler(Looper.getMainLooper());
         }
 
         @Override
         public List<MusicEntity> call() throws Exception {
-            List<MusicEntity> musics = GuitarData.getInstance().query();
-            mQueryMusicsCallback.onMusics(musics);
+            final List<MusicEntity> musics = GuitarData.getInstance().query();
+            
+            mUiHandler.post(new Runnable() {
+                
+                @Override
+                public void run() {
+                    if (mQueryMusicsCallback != null) {
+                        mQueryMusicsCallback.onMusics(musics);
+                    }
+                }
+            });
+           
             return musics;
         }
         
