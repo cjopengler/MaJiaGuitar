@@ -15,11 +15,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.majia.guitar.data.json.ApkVersionJson;
 import com.majia.guitar.data.json.MusicJson;
 import com.majia.guitar.data.json.MusicJson.Music;
 import com.majia.guitar.data.json.MusicTempJson;
@@ -32,14 +34,26 @@ import com.majia.guitar.util.MusicLog;
  * @author panxu
  * @since 2014-2-24
  */
-public class RemoteMusicServer {
+public class RemoteMusicServer implements IRemoteService {
     
-    private static final String VERSION_URL = "http://yogaguitar.duapp.com/version.php";
-    private static final String GET_MUSICS_URL = "http://yogaguitar.duapp.com/musics.php";
+    private static final String HOST_URL = "http://yogaguitar.duapp.com/";
+    private static final String VERSION_URL = HOST_URL + "version.php";
+    private static final String GET_MUSICS_URL = HOST_URL + "musics.php";
+    private static final String QUERY_APK_VERSION = HOST_URL + "/apk_version.php?version_code=%d";
+    
+    private static final class Holder {
+        public static final RemoteMusicServer INSTANCE = new RemoteMusicServer();
+    }
+    
+    public static RemoteMusicServer getInstance() {
+        return Holder.INSTANCE;
+    }
     
     private RemoteMusicServer() {
         
     }
+    
+    
     
     public static Versions getVersions() {
         Versions versions = null;
@@ -111,6 +125,20 @@ public class RemoteMusicServer {
             return result;
         }
         
+    }
+
+
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public ApkVersionJson queryApkVersion(int versionCode) throws JsonSyntaxException, ClientProtocolException, IOException {
+        
+        String serverUrl = String.format(QUERY_APK_VERSION, versionCode);
+        
+    
+        ApkVersionJson apkVersionJson = HttpUtil.executeForJsonObject(new HttpGet(serverUrl), ApkVersionJson.class);
+
+        return apkVersionJson;
     }
     
     

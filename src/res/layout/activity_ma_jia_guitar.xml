@@ -5,14 +5,12 @@
     android:orientation="vertical" 
     tools:context=".MaJiaGuitarActivity" >
 
+    <FrameLayout
+        android:id="@+id/titleBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </FrameLayout>
 
-
-        <fragment
-            android:id="@+id/fragment1"
-            android:name="com.majia.guitar.ui.TitleFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +20,11 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+
+            
+
+        </FrameLayout>
         
         
         <fragment
@@ -31,8 +33,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0" />
+        
+        
 
     </LinearLayout>
+    
+    <fragment
+                android:id="@+id/queryUpdateFragment"
+                android:name="com.majia.guitar.ui.QueryUpdateFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
     
     

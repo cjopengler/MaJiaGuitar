@@ -7,6 +7,8 @@ import com.majia.guitar.service.UpdateService;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 /**
  * 
@@ -21,11 +23,24 @@ public class MaJiaGuitarApplication extends Application {
         super.onCreate();
         
         INSTANCE = this;
-        //启动更新
-        this.startService(new Intent(UpdateService.UPDATE_GUITAR_MUSIC_ACTION));
+       
     }
     
-    public static final Application getInstance() {
+    public static final MaJiaGuitarApplication getInstance() {
         return INSTANCE;
+    }
+    
+    public int getVersionCode() {
+        int versionCode = 0;
+        try {
+            PackageInfo packageInfo = getPackageManager().
+                          getPackageInfo(getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    
+        return versionCode;
     }
 }

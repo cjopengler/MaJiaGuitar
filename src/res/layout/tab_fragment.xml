@@ -83,18 +83,34 @@
         android:layout_height="match_parent"
         android:layout_weight="1" >
 
-        <ImageView
-            android:id="@+id/aboutImageView"
+        <RelativeLayout
+            android:id="@+id/aboutLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/icon_about" />
+            android:layout_alignParentRight="false"
+            android:layout_centerHorizontal="true" >
+
+            <ImageView
+                android:id="@+id/aboutImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_about" />
+            
+            <ImageView
+                android:id="@+id/apkUpdateImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="false"
+                android:layout_alignRight="@id/aboutImageView"
+                android:src="@drawable/icon_news_down_bar_one" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/aboutImageView"
+            android:layout_below="@id/aboutLayout"
             android:layout_centerHorizontal="true"
             android:text="@string/about"
             android:textColor="@color/white" />

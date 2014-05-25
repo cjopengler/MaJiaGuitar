@@ -2,6 +2,8 @@ package com.majia.guitar;
 
 
 import com.majia.guitar.ui.MusicFragment;
+import com.majia.guitar.ui.TitleBarFragment;
+import com.majia.guitar.ui.TitleBarFragment.Args;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -25,6 +27,14 @@ public class MaJiaGuitarActivity extends FragmentActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.content_container, MusicFragment.newInstance());
+        
+        Args titleBarArgs = Args.buidArgs()
+                                .setTitle(R.string.yoga_guitar)
+                                .setShowBack(false);
+        
+        TitleBarFragment titleBarFragment = TitleBarFragment.newInstance(titleBarArgs);
+        
+        ft.add(R.id.titleBarContainer, titleBarFragment);
         ft.commit();
         
     }

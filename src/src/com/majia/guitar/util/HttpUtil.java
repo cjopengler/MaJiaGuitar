@@ -99,22 +99,6 @@ public final class HttpUtil {
         return execute(request, new JsonObjectResonponsHandler<T>(classType));
     }
 
-    /**
-     * http请求并解析出json arry 数据结构
-     * 
-     * @param request
-     *            http请求
-     * @return 解析的数组结构
-     * @throws ClientProtocolException
-     *             异常
-     * @throws IOException
-     *             异常
-     */
-    public static final <T> List<T> executeForJsonArray(HttpUriRequest request) throws ClientProtocolException,
-            IOException, JsonSyntaxException {
-        return execute(request, new JsonArrayResonponsHandler<T>());
-
-    }
 
     private static class JsonObjectResonponsHandler<T> implements ResponseHandler<T> {
 

@@ -4,13 +4,21 @@
     android:layout_height="wrap_content"
     android:background="@drawable/title_bg" >
 
+    <ImageView
+        android:id="@+id/backImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/titlebar_common_button_selector" />
+
     <TextView
-        android:id="@+id/nameTextView"
+        android:id="@+id/titleTextView"
+        style="@style/title_bar_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/guitar_music"
-        android:textColor="@color/white" />
+        android:text="TextView" />
 
 </RelativeLayout>
