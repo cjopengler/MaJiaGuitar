@@ -7,8 +7,11 @@ import java.util.ListIterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.R.integer;
+
 /**
- * 
+ * 这里不支持断点续传 如果要支持断点续传需要使用数据库来维护下载数据
+ * 所以称之为MemoryDoanloadData
  * @author panxu
  * @since 2013-12-30
  */
@@ -34,6 +37,7 @@ public class MemoryDownloadData extends AbstractDownloadData {
         mDownloadInfo = new DownloadInfo(DownloadInfo.IDEL_STATUS, 
                 0, 
                 0, 
+                "",
                 "");
         
     }
@@ -62,7 +66,8 @@ public class MemoryDownloadData extends AbstractDownloadData {
                                             DownloadInfo.DOWNLOAD_START_STATUS,
                                             0, 
                                             totalSize, 
-                                            softwareVersion);
+                                            softwareVersion,
+                                            "");
         mDownloadInfo = new DownloadInfo(downloadInfo);
         
         notifyListeners();
@@ -76,7 +81,8 @@ public class MemoryDownloadData extends AbstractDownloadData {
         mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOADING_STATUS, 
                                          downloadSize, 
                                          mDownloadInfo.getTotalSize(), 
-                                         mDownloadInfo.getVersion());
+                                         mDownloadInfo.getVersion(),
+                                         "");
         mLock.unlock();
         
         notifyListeners();
@@ -86,12 +92,13 @@ public class MemoryDownloadData extends AbstractDownloadData {
 
 
     @Override
-    public long finish(long id) {
+    public long finish(long id, int error, String downloadPath) {
         
         mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_FINISH_STATUS, 
                                          mDownloadInfo.getDownloadSize(), 
                                          mDownloadInfo.getTotalSize(), 
-                                         mDownloadInfo.getVersion());
+                                         mDownloadInfo.getVersion(),
+                                         downloadPath);
         
         notifyListeners();
         return 0;

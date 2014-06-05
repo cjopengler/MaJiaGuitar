@@ -54,7 +54,7 @@
     </RelativeLayout>
     
     <RelativeLayout
-        android:id="@+id/updatLayout"
+        android:id="@+id/updateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >

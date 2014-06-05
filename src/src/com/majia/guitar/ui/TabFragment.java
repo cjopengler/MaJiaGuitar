@@ -56,7 +56,7 @@ public class TabFragment extends Fragment implements UpdateListener {
             }
         });
         
-        View updateView = tabView.findViewById(R.id.updatLayout);
+        View updateView = tabView.findViewById(R.id.updateLayout);
         updateView.setOnClickListener(new View.OnClickListener() {
             
             @Override
@@ -74,6 +74,10 @@ public class TabFragment extends Fragment implements UpdateListener {
             @Override
             public void onClick(View v) {
                 mApkUpdateImageView.setVisibility(View.GONE);
+                
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_container, AboutFragment.newInstance());
+                ft.commit();
             }
         });
         

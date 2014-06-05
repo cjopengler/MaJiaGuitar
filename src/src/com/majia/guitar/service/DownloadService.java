@@ -20,11 +20,13 @@ import com.majia.guitar.R;
 import com.majia.guitar.data.bcs.BCSConfiguration;
 import com.majia.guitar.data.download.IDownloadData;
 import com.majia.guitar.data.download.MemoryDownloadData;
+import com.majia.guitar.util.Assert;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,12 +37,18 @@ import android.widget.Toast;
  */
 public class DownloadService extends IntentService {
     
-    public static final String DOWNLOAD_ACTION = "com.majia.guitar.service.download";
+    public static final String DOWNLOAD_BCS_ACTION = "com.majia.guitar.service.download";
+    public static final String DOWLOAD_BUCKET_PATH = "com.majia.guitar.service.download_url";
+    
+    /**用来生成Apk的名字*/
+    public static final String DOWNLOAD_VERSION_CODE = "com.majia.guitar.service.download_version_code";
     
     private static final String TAG = "DownloadService";
-    private static final String SERVICE_NANME = "DownloadService";
+    private static final String SERVICE_NAME = "DownloadService";
     
     private static final int BUFFER_MAX_SIZE = 1024 * 2;
+    
+    
     
     private IDownloadData mDownloadData = MemoryDownloadData.getInstance();
     
@@ -49,7 +57,7 @@ public class DownloadService extends IntentService {
      * @param name
      */
     public DownloadService() {
-        super(SERVICE_NANME);
+        super(SERVICE_NAME);
     }
 
     @Override
@@ -62,17 +70,23 @@ public class DownloadService extends IntentService {
         //Uri donwloadUri = intent.getData();
         String action = intent.getAction();
         
-        if (action.equals(DOWNLOAD_ACTION)) {
-            handleDownload();
+        if (action.equals(DOWNLOAD_BCS_ACTION)) {
+            String bucketPath = intent.getStringExtra(DOWLOAD_BUCKET_PATH);
+            int downloadVersionCode = intent.getIntExtra(DOWNLOAD_VERSION_CODE, -1);
+            
+            Assert.assertTrue(!TextUtils.isEmpty(bucketPath));
+            Assert.assertTrue(downloadVersionCode != -1);
+            
+            handleDownload(bucketPath, downloadVersionCode);
         }
     }
     
-    private void handleDownload() {
+    private void handleDownload(String downloadBucketPath, int downloadVersionCode) {
 
         boolean isDownloadSuccess = false;
         RandomAccessFile apkRandomAccessFile = null;
         InputStream inputStream = null;
-        
+        String path = "";
 
         try {
             BCSCredentials credentials = new BCSCredentials(BCSConfiguration.accessKey, BCSConfiguration.secretKey);
@@ -80,20 +94,22 @@ public class DownloadService extends IntentService {
             baiduBCS.setDefaultEncoding("UTF-8");
             
             GetObjectRequest getObjectRequest = new GetObjectRequest(BCSConfiguration.bucket,
-                    BCSConfiguration.APK_PATH);
+                                                                     downloadBucketPath);
             BaiduBCSResponse<DownloadObject> downloadRsp = baiduBCS.getObject(getObjectRequest);
             long totalSize = downloadRsp.getResult().getObjectMetadata().getContentLength();
 
-            mDownloadData.update(totalSize, "0");
+            mDownloadData.update(totalSize, downloadVersionCode);
             
             inputStream = downloadRsp.getResult().getContent();
 
+            
             File file = this.getExternalFilesDir(null);
 
             if (file == null) {
                 // 给出提示
+                
             } else {
-                String path = file.getPath() + "/" + "yogaguitar.apk";
+                path = file.getPath() + "/" + "yogaguitar_" + downloadVersionCode + ".apk";
 
                 apkRandomAccessFile = new RandomAccessFile(path, "rw");// new
                                                                        // RandomAccessFile(apkFile,
@@ -112,7 +128,7 @@ public class DownloadService extends IntentService {
 
                     totalReadLenth += readLength;
                     
-                    mDownloadData.update(0, totalReadLenth);
+                    mDownloadData.update(downloadVersionCode, totalReadLenth);
                 }
 
                 if (totalReadLenth != totalSize) {
@@ -156,19 +172,23 @@ public class DownloadService extends IntentService {
         }
         
         if (isDownloadSuccess) {
-            mDownloadData.finish(0);
+            mDownloadData.finish(downloadVersionCode, IDownloadData.SUCCESS, path);
             
-            File file = this.getExternalFilesDir(null);
-
-            String path = file.getPath() + "/" + "yogaguitar.apk";
-
-            Intent installIntent = new Intent(Intent.ACTION_VIEW);
+            /*Intent installIntent = new Intent(Intent.ACTION_VIEW);
             installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             installIntent.setDataAndType(Uri.parse("file://" + path), "application/vnd.android.package-archive");
 
-            startActivity(installIntent);
+            startActivity(installIntent);*/
+        } else {
+            mDownloadData.finish(downloadVersionCode, IDownloadData.ERROR, path);
         }
     
+    }
+    
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
     }
 
 }

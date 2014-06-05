@@ -19,11 +19,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/appNameTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="当前版本：" />
+        android:text="TextView" />
 
     <Button
-        android:id="@+id/checkUpdateVersionButton"
+        android:id="@+id/updateApkButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/currentVersionTextView"
@@ -31,18 +30,17 @@
         android:layout_marginTop="10dp"
         android:text="检测新版本" />
 
-
         <LinearLayout
             android:id="@+id/updateLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/currentVersionTextView"
-            android:orientation="vertical"
+            android:layout_below="@id/updateApkButton"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp" >
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/updateVersionTextView"
+                android:id="@+id/newVersionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -53,8 +51,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
-
-            
 
         </LinearLayout>
 

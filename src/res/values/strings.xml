@@ -7,6 +7,8 @@
     
     <string name="guitar_music">吉他谱</string>
     
+    <string name="cancle">取消</string>
+    
     <string name="musics">谱子</string>
     <string name="favorite">收藏</string>
     <string name="update">更新</string>
@@ -21,5 +23,13 @@
     <string name="version">版本:%1$</string>
     <string name="software">软件</string>
     <string name="download_finish">下载完成</string>
+    
+    
+    <string name="about_current_version">当前版本：%1$s</string>
+    <string name="about_update_apk">立即更新应用</string>
+    <string name="about_check_update_apk">检查新的应用</string>
+    <string name="about_downloading_apk">下载应用</string>
+    <string name="about_apk_install">安装</string>
+    
 
 </resources>

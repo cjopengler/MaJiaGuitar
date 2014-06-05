@@ -66,7 +66,7 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
             @Override
             public void onClick(View v) {
                 Intent downloadServiceIntent = new Intent(getActivity(), DownloadService.class);
-                downloadServiceIntent.setAction(DownloadService.DOWNLOAD_ACTION);
+                downloadServiceIntent.setAction(DownloadService.DOWNLOAD_BCS_ACTION);
                 getActivity().startService(downloadServiceIntent);
             }
         });
@@ -86,7 +86,7 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
             @Override
             public void onClick(View v) {
                 Intent downloadServiceIntent = new Intent(getActivity(), DownloadService.class);
-                downloadServiceIntent.setAction(DownloadService.DOWNLOAD_ACTION);
+                downloadServiceIntent.setAction(DownloadService.DOWNLOAD_BCS_ACTION);
                 getActivity().startService(downloadServiceIntent);
                 
             }

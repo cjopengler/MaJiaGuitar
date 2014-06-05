@@ -18,6 +18,8 @@ public class ApkVersion {
     public final String internalPath;
     public final String externalUrl;
     
+    public final long apkSize;
+    
     public ApkVersion(ApkVersionJson apkVersionJson) {
         versionName = apkVersionJson.description.version_name;
         versionCode = Integer.valueOf(apkVersionJson.description.version_code);

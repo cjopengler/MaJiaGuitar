@@ -10,6 +10,9 @@ package com.majia.guitar.data.download;
  */
 public interface IDownloadData {
     
+    public static final int SUCCESS = 0;
+    public static final int ERROR = -1;
+    
     
     DownloadInfo getCurDownloadInfo();
     
@@ -29,7 +32,7 @@ public interface IDownloadData {
     long update(long id, long downloadSize);
     
 
-    long finish(long id);
+    long finish(long id, int error, String downloadPath);
     
     void addListener(IDownloadListener listener);
     void removeListener(IDownloadListener listener);

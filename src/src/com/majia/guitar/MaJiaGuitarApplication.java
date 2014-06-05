@@ -43,4 +43,18 @@ public class MaJiaGuitarApplication extends Application {
     
         return versionCode;
     }
+    
+    public String getVersionName() {
+        String versionName = "";
+        try {
+            PackageInfo packageInfo = getPackageManager().
+                          getPackageInfo(getPackageName(), 0);
+            versionName = packageInfo.versionName;
+        } catch (NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    
+        return versionName;
+    }
 }

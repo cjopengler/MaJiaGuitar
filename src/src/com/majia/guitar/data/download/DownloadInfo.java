@@ -20,19 +20,22 @@ public class DownloadInfo {
     private final long mDownloadSize;
     private final long mTotalSize;
     private final String mVersion;
+    private final String mDownloadPath;
     
-    public DownloadInfo(int status, long downloadSize, long totalSize, final String version) {
+    public DownloadInfo(int status, long downloadSize, long totalSize, final String version, final String downloadPath) {
         mStatus = status;
         mDownloadSize = downloadSize;
         mTotalSize = totalSize;
         mVersion = version;
+        mDownloadPath = downloadPath;
     }
     
     public DownloadInfo(DownloadInfo downloadInfo) {
         this(downloadInfo.mStatus, 
                 downloadInfo.mDownloadSize, 
                 downloadInfo.mTotalSize, 
-                downloadInfo.mVersion);
+                downloadInfo.mVersion,
+                downloadInfo.mDownloadPath);
     }
     public int getStatus() {
         return mStatus;
@@ -48,6 +51,10 @@ public class DownloadInfo {
 
     public String getVersion() {
         return mVersion;
+    }
+    
+    public String getDownloadPath() {
+        return mDownloadPath;
     }
     
     @Override
