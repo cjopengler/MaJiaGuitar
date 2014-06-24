@@ -19,6 +19,7 @@ public class ApkVersionJson {
         public String change_log;
         public String internal_path;
         public String external_url;
+        public String apk_size;
     }
     
     public static final int UPDATE_TRUE = 1;

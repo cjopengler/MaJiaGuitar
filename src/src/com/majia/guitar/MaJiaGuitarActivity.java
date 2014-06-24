@@ -1,11 +1,16 @@
 package com.majia.guitar;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import com.majia.guitar.ui.MusicFragment;
 import com.majia.guitar.ui.TitleBarFragment;
 import com.majia.guitar.ui.TitleBarFragment.Args;
+import com.majia.guitar.util.MusicLog;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class MaJiaGuitarActivity extends FragmentActivity {
+    private static final String TAG = "MaJiaGuitarActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class MaJiaGuitarActivity extends FragmentActivity {
         ft.add(R.id.titleBarContainer, titleBarFragment);
         ft.commit();
         
+       
     }
 
 }

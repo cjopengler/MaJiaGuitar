@@ -24,6 +24,7 @@ public class UpdateApkVersion implements IUpdateApkVersion {
     private final String CHANGEL_LOG = "apk_version_change_log";
     private final String INTERNAL_PATH = "internal_path";
     private final String EXTERNAL_ULR = "external_url";
+    private final String APK_SIZE = "apk_size";
     
     private final CopyOnWriteArrayList<UpdateListener> mUpdateListeners = new CopyOnWriteArrayList<IUpdateApkVersion.UpdateListener>();
     
@@ -51,15 +52,17 @@ public class UpdateApkVersion implements IUpdateApkVersion {
             String changeLog = "";
             String internalPath = "";
             String externalUrl = "";
+            int apkSize = 0;
             
             if (versionCode > 0) {
                 versionName = dataSharedPreferences.getString(VERSION_NAME, "");
                 changeLog = dataSharedPreferences.getString(CHANGEL_LOG, "");
                 internalPath = dataSharedPreferences.getString(INTERNAL_PATH, "");
                 externalUrl = dataSharedPreferences.getString(EXTERNAL_ULR, "");
+                apkSize = dataSharedPreferences.getInt(APK_SIZE, 0);
             } 
             
-            mApkVersion = new ApkVersion(versionName, versionCode, changeLog, internalPath, externalUrl);
+            mApkVersion = new ApkVersion(versionName, versionCode, changeLog, internalPath, externalUrl, apkSize);
         }
         
         return mApkVersion;
@@ -85,6 +88,7 @@ public class UpdateApkVersion implements IUpdateApkVersion {
             dataEditor.putString(CHANGEL_LOG, apkVersion.changeLog);
             dataEditor.putString(INTERNAL_PATH, apkVersion.internalPath);
             dataEditor.putString(EXTERNAL_ULR, apkVersion.externalUrl);
+            dataEditor.putInt(APK_SIZE, apkVersion.apkSize);
             
             dataEditor.commit();
             

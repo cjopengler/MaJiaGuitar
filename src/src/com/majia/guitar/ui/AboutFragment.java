@@ -11,12 +11,15 @@ import com.majia.guitar.data.download.DownloadInfo;
 import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
 import com.majia.guitar.data.download.MemoryDownloadData;
 import com.majia.guitar.service.DownloadService;
+import com.majia.guitar.util.Assert;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
@@ -42,6 +46,8 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     private Button mUpdateVersionButton;
     
     private ProgressDialog mProgressDialog;
+    
+    private final Handler mUiHandler = new Handler(MaJiaGuitarApplication.getInstance().getMainLooper());
 
     public static AboutFragment newInstance() {
         return new AboutFragment();
@@ -93,14 +99,14 @@ public class AboutFragment extends Fragment implements IDownloadListener {
                 mProgressDialog.setIconAttribute(android.R.attr.alertDialogIcon);
                 mProgressDialog.setTitle(R.string.about_downloading_apk);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                mProgressDialog.setMax(100);
                 
                 
-                mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                
+                /*mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE,
                         getText(R.string.about_apk_install), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        /* User clicked Yes so do some stuff */
+                         User clicked Yes so do some stuff 
                     }
                 });
                 
@@ -111,20 +117,20 @@ public class AboutFragment extends Fragment implements IDownloadListener {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //getActivity().stopService(name);
                     }
-                });
+                });*/
                 
                 mProgressDialog.setCancelable(false);
             }
+            ApkVersion apkVersion = UpdateApkVersion.getInstance().getApkVersion();
             
-            
-            
+            mProgressDialog.setMax(apkVersion.apkSize);
             mProgressDialog.show();
-            mProgressDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+            
         
             
             MemoryDownloadData.getInstance().addListener(AboutFragment.this);
             
-            ApkVersion apkVersion = UpdateApkVersion.getInstance().getApkVersion();
+           
             Intent downloadApkIntent = new Intent(getActivity(), DownloadService.class);
             downloadApkIntent.setAction(DownloadService.DOWNLOAD_BCS_ACTION);
             downloadApkIntent.putExtra(DownloadService.DOWNLOAD_VERSION_CODE, apkVersion.versionCode);
@@ -145,7 +151,53 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     }
 
     @Override
-    public void onDownload(long id, DownloadInfo downloadInfo) {
-        Log.d(TAG, "downloadInfo is: " + downloadInfo.getStatus());
+    public void onDownload(long id, final DownloadInfo downloadInfo) {
+        mUiHandler.post(new Runnable() {
+            
+            @Override
+            public void run() {
+                Log.d(TAG, "downloadInfo is: " + downloadInfo.getStatus());
+                mProgressDialog.setProgress((int) downloadInfo.getDownloadSize());
+                
+                switch (downloadInfo.getStatus()) {
+                case DownloadInfo.DOWNLOAD_IS_ONGOING:
+                    
+                    break;
+                    
+                case DownloadInfo.DOWNLOAD_FINISH_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error, Toast.LENGTH_LONG).show();
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_IO_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_io, Toast.LENGTH_LONG).show();
+                    break;
+                
+                case DownloadInfo.DOWNLOAD_FINISH_NET_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_net, Toast.LENGTH_LONG).show();
+                    break;
+                    
+                case DownloadInfo.DOWNLOAD_FINISH_SUCCESS:
+                    mProgressDialog.dismiss();
+                    
+                    Intent installIntent = new Intent(Intent.ACTION_VIEW);
+                    installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    installIntent.setDataAndType(Uri.parse("file://" + downloadInfo.getDownloadPath()), "application/vnd.android.package-archive");
+
+                    startActivity(installIntent);
+                    break;
+                    
+
+                default:
+                    Assert.assertOnly("download status error: " + downloadInfo.getStatus());
+                    break;
+                }
+                
+            }
+        });
+        
+       
     }
 }

@@ -119,26 +119,26 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
         });
     }
     
-    private void setDownloadUi(DownloadInfo downloadInfo) {
+    private void setDownloadUi(DownloadInfo downloadInfo) {/*
         
         GuitarLog.d(TAG, "donwloadInfo: " + downloadInfo);
         
         switch (downloadInfo.getStatus()) {
         
-        case DownloadInfo.IDEL_STATUS:
+        case DownloadInfo.DOWNLOAD_IDEL:
             mApkUpdateButton.setEnabled(false);
             mDownloadPercentTextView.setVisibility(View.GONE);
             mDownloadProgressBar.setVisibility(View.GONE);
             break;
         
-        case DownloadInfo.DOWNLOAD_START_STATUS:
+        case DownloadInfo.DOWNLOAD_START:
             mApkUpdateButton.setEnabled(true);
             mDownloadPercentTextView.setVisibility(View.GONE);
             mDownloadProgressBar.setVisibility(View.GONE);
             break;
             
             
-        case DownloadInfo.DOWNLOADING_STATUS:
+        case DownloadInfo.DOWNLOAD_IS_ONGOING:
             long downloadSize = downloadInfo.getDownloadSize();
             long totalSize = downloadInfo.getTotalSize();
             
@@ -152,7 +152,7 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
             mDownloadProgressBar.setProgress((int) downloadSize);
             break;
             
-        case DownloadInfo.DOWNLOAD_FINISH_STATUS:
+        case DownloadInfo.DOWNLOAD_FINISH_SUCCESS:
             mApkUpdateButton.setEnabled(false);
             mDownloadPercentTextView.setVisibility(View.GONE);
             mDownloadProgressBar.setVisibility(View.GONE);
@@ -161,7 +161,7 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
         default:
             break;
         }
-    }
+    */}
 
     @Override
     public void onUpdateVersion(Version oldMusicVersion, Version newMusicVersion, Version oldApkVersion,

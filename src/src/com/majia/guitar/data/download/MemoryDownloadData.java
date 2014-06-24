@@ -7,6 +7,8 @@ import java.util.ListIterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.majia.guitar.util.Assert;
+
 import android.R.integer;
 
 /**
@@ -34,10 +36,10 @@ public class MemoryDownloadData extends AbstractDownloadData {
         super();
         
         mLock = new ReentrantLock();
-        mDownloadInfo = new DownloadInfo(DownloadInfo.IDEL_STATUS, 
+        mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_FINISH_SUCCESS, 
                 0, 
                 0, 
-                "",
+                0,
                 "");
         
     }
@@ -60,25 +62,15 @@ public class MemoryDownloadData extends AbstractDownloadData {
         return downloadInfo;
     }
 
-    @Override
-    public long update(long totalSize, String softwareVersion) {
-        DownloadInfo downloadInfo = new DownloadInfo(
-                                            DownloadInfo.DOWNLOAD_START_STATUS,
-                                            0, 
-                                            totalSize, 
-                                            softwareVersion,
-                                            "");
-        mDownloadInfo = new DownloadInfo(downloadInfo);
-        
-        notifyListeners();
-        
-        return 0;
-    }
 
+
+    /**
+     * 这里的id就是version code
+     */
     @Override
-    public long update(long id, long downloadSize) {
+    public long update(long versionCode, long downloadSize, long totalSize) {
         mLock.lock();
-        mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOADING_STATUS, 
+        mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_IS_ONGOING, 
                                          downloadSize, 
                                          mDownloadInfo.getTotalSize(), 
                                          mDownloadInfo.getVersion(),
@@ -92,9 +84,31 @@ public class MemoryDownloadData extends AbstractDownloadData {
 
 
     @Override
-    public long finish(long id, int error, String downloadPath) {
+    public long finish(long versionCode, int error, String downloadPath) {
         
-        mDownloadInfo = new DownloadInfo(DownloadInfo.DOWNLOAD_FINISH_STATUS, 
+        int downloadStatus = DownloadInfo.DOWNLOAD_FINISH_SUCCESS;
+        
+        switch (error) {
+        case IDownloadData.ERROR:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_ERROR;
+            break;
+            
+        case IDownloadData.ERROR_IO:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_IO_ERROR;
+            break;
+        case IDownloadData.ERROR_NETWORK:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_NET_ERROR;
+            break;
+            
+        case IDownloadData.SUCCESS:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_SUCCESS;
+            break;
+
+        default:
+            Assert.assertOnly("error code is not exist " + error);
+            break;
+        }
+        mDownloadInfo = new DownloadInfo(downloadStatus, 
                                          mDownloadInfo.getDownloadSize(), 
                                          mDownloadInfo.getTotalSize(), 
                                          mDownloadInfo.getVersion(),

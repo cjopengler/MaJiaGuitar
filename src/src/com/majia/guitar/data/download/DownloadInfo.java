@@ -9,20 +9,22 @@ package com.majia.guitar.data.download;
  * @since 2013-12-30
  */
 public class DownloadInfo {
-    public static final int IDEL_STATUS = 0;
-    public static final int DOWNLOAD_START_STATUS = 1;
-    public static final int DOWNLOADING_STATUS = 2;
-    public static final int DOWNLOAD_FINISH_STATUS = 3;
+
+    public static final int DOWNLOAD_IS_ONGOING = 2;
+    public static final int DOWNLOAD_FINISH_SUCCESS = 3;
+    public static final int DOWNLOAD_FINISH_IO_ERROR = 4;
+    public static final int DOWNLOAD_FINISH_NET_ERROR = 5;
+    public static final int DOWNLOAD_FINISH_ERROR = 6;
     
     private final int mStatus;
     
 
     private final long mDownloadSize;
     private final long mTotalSize;
-    private final String mVersion;
+    private final long mVersion;
     private final String mDownloadPath;
     
-    public DownloadInfo(int status, long downloadSize, long totalSize, final String version, final String downloadPath) {
+    public DownloadInfo(int status, long downloadSize, long totalSize, long version, final String downloadPath) {
         mStatus = status;
         mDownloadSize = downloadSize;
         mTotalSize = totalSize;
@@ -49,7 +51,7 @@ public class DownloadInfo {
         return mTotalSize;
     }
 
-    public String getVersion() {
+    public long getVersion() {
         return mVersion;
     }
     

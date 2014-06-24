@@ -16,6 +16,7 @@ import com.baidu.inf.iis.bcs.model.BCSServiceException;
 import com.baidu.inf.iis.bcs.model.DownloadObject;
 import com.baidu.inf.iis.bcs.request.GetObjectRequest;
 import com.baidu.inf.iis.bcs.response.BaiduBCSResponse;
+import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
 import com.majia.guitar.data.bcs.BCSConfiguration;
 import com.majia.guitar.data.download.IDownloadData;
@@ -25,6 +26,7 @@ import com.majia.guitar.util.Assert;
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -87,6 +89,7 @@ public class DownloadService extends IntentService {
         RandomAccessFile apkRandomAccessFile = null;
         InputStream inputStream = null;
         String path = "";
+        int errorCode = IDownloadData.ERROR;
 
         try {
             BCSCredentials credentials = new BCSCredentials(BCSConfiguration.accessKey, BCSConfiguration.secretKey);
@@ -94,26 +97,21 @@ public class DownloadService extends IntentService {
             baiduBCS.setDefaultEncoding("UTF-8");
             
             GetObjectRequest getObjectRequest = new GetObjectRequest(BCSConfiguration.bucket,
-                                                                     downloadBucketPath);
+                                                                     "/" + downloadBucketPath);
             BaiduBCSResponse<DownloadObject> downloadRsp = baiduBCS.getObject(getObjectRequest);
             long totalSize = downloadRsp.getResult().getObjectMetadata().getContentLength();
 
-            mDownloadData.update(totalSize, downloadVersionCode);
+            mDownloadData.update(downloadVersionCode, 0, totalSize);
             
             inputStream = downloadRsp.getResult().getContent();
-
             
             File file = this.getExternalFilesDir(null);
-
-            if (file == null) {
-                // 给出提示
-                
-            } else {
+            
+            if (file != null) {
                 path = file.getPath() + "/" + "yogaguitar_" + downloadVersionCode + ".apk";
 
-                apkRandomAccessFile = new RandomAccessFile(path, "rw");// new
-                                                                       // RandomAccessFile(apkFile,
-                                                                       // "rw");
+                apkRandomAccessFile = new RandomAccessFile(path, "rw");
+
 
                 apkRandomAccessFile.setLength(totalSize);
 
@@ -127,37 +125,41 @@ public class DownloadService extends IntentService {
                     apkRandomAccessFile.write(buffer, 0, readLength);
 
                     totalReadLenth += readLength;
-                    
-                    mDownloadData.update(downloadVersionCode, totalReadLenth);
+
+                    mDownloadData.update(downloadVersionCode, totalReadLenth, totalSize);
                 }
 
                 if (totalReadLenth != totalSize) {
                     throw new RuntimeException("offset = " + totalReadLenth + ", totalSize = " + totalSize);
                 } else {
-                    Toast.makeText(this, R.string.download_finish, Toast.LENGTH_LONG).show();
-                    isDownloadSuccess = true;
-                    
+                    errorCode = IDownloadData.SUCCESS;
+
                 }
 
+            } else {
+                errorCode = IDownloadData.ERROR_IO;
+               
             }
 
         } catch (BCSServiceException e) {
             Log.e(TAG,
                     "Bcs return:" + e.getBcsErrorCode() + ", " + e.getBcsErrorMessage() + ", RequestId="
                             + e.getRequestId());
+            
+            errorCode = IDownloadData.ERROR_NETWORK;
         } catch (BCSClientException e) {
-            e.printStackTrace();
+
+            errorCode = IDownloadData.ERROR_NETWORK;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            errorCode = IDownloadData.ERROR_IO;
         } catch (IOException e) {
-            e.printStackTrace();
+            errorCode = IDownloadData.ERROR_IO;
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    errorCode = IDownloadData.ERROR_IO;
                 }
             }
 
@@ -167,22 +169,13 @@ public class DownloadService extends IntentService {
                     apkRandomAccessFile.close();
                 } catch (IOException e) {
                     Log.e(TAG, "close failed for io exception " + e.getMessage());
+                    errorCode = IDownloadData.ERROR_IO;
                 }
             }
         }
         
-        if (isDownloadSuccess) {
-            mDownloadData.finish(downloadVersionCode, IDownloadData.SUCCESS, path);
-            
-            /*Intent installIntent = new Intent(Intent.ACTION_VIEW);
-            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            installIntent.setDataAndType(Uri.parse("file://" + path), "application/vnd.android.package-archive");
-
-            startActivity(installIntent);*/
-        } else {
-            mDownloadData.finish(downloadVersionCode, IDownloadData.ERROR, path);
-        }
-    
+        mDownloadData.finish(downloadVersionCode, errorCode, path);
+        
     }
     
     @Override

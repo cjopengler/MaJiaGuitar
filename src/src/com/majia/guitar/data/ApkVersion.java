@@ -18,7 +18,7 @@ public class ApkVersion {
     public final String internalPath;
     public final String externalUrl;
     
-    public final long apkSize;
+    public final int apkSize;
     
     public ApkVersion(ApkVersionJson apkVersionJson) {
         versionName = apkVersionJson.description.version_name;
@@ -26,19 +26,22 @@ public class ApkVersion {
         changeLog = apkVersionJson.description.change_log;
         internalPath = apkVersionJson.description.internal_path;
         externalUrl = apkVersionJson.description.external_url;
+        apkSize = Integer.valueOf(apkVersionJson.description.apk_size);
     }
     
     public ApkVersion(String versionName, 
                       int versionCode,
                       String changeLog,
                       String internalPath,
-                      String externalUrl) {
+                      String externalUrl,
+                      int apkSize) {
         
         this.versionName = versionName;
         this.versionCode = versionCode;
         this.changeLog = changeLog;
         this.internalPath = internalPath;
         this.externalUrl = externalUrl;
+        this.apkSize = apkSize;
         
     }
 

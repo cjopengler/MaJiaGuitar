@@ -30,6 +30,9 @@
     <string name="about_check_update_apk">检查新的应用</string>
     <string name="about_downloading_apk">下载应用</string>
     <string name="about_apk_install">安装</string>
+    <string name="about_download_error_io">下载失败，请检查文件系统是否满</string>
+    <string name="about_download_error_net">下载失败，请检查网络</string>
+    <string name="about_download_error">下载失败，请重试</string>
     
 
 </resources>
