@@ -17,6 +17,10 @@ public class Version {
         mVersionCode = versionCode;
     }
     
+    public Version(String versionName, String versionCode) {
+        this(versionName, Long.parseLong(versionCode));
+    }
+    
     public final String getVersionName() {
         return mVersionName;
     }

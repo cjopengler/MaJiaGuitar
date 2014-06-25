@@ -34,47 +34,34 @@ import com.majia.guitar.util.MusicLog;
  * @author panxu
  * @since 2014-2-24
  */
-public class RemoteMusicServer implements IRemoteService {
+public class MusicRemoteServer implements IRemoteServer {
     
     private static final String HOST_URL = "http://yogaguitar.duapp.com/";
     private static final String VERSION_URL = HOST_URL + "version.php";
-    private static final String GET_MUSICS_URL = HOST_URL + "musics.php";
+    private static final String GET_MUSICS_URL = HOST_URL + "musics.php?version_code=%d";
     private static final String QUERY_APK_VERSION = HOST_URL + "/apk_version.php?version_code=%d";
     
     private static final class Holder {
-        public static final RemoteMusicServer INSTANCE = new RemoteMusicServer();
+        public static final MusicRemoteServer INSTANCE = new MusicRemoteServer();
     }
     
-    public static RemoteMusicServer getInstance() {
+    public static MusicRemoteServer getInstance() {
         return Holder.INSTANCE;
     }
     
-    private RemoteMusicServer() {
+    private MusicRemoteServer() {
         
     }
     
     
     
-    public static Versions getVersions() {
-        Versions versions = null;
-        
-        HttpUriRequest request = new HttpGet(VERSION_URL);
-        try {
-            VersionJson versionJson = HttpUtil.executeForJsonObject(request, VersionJson.class);
-            versions = new Versions(versionJson);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-        
-        return versions;
-    }
+   
     
-    public static MusicJson getMusics() {
-        HttpUriRequest request = new HttpGet(GET_MUSICS_URL);
+    @SuppressLint("DefaultLocale")
+    public static MusicJson getMusics(long versionCode) {
+        
+        String serverUrl = String.format(GET_MUSICS_URL, versionCode);
+        HttpUriRequest request = new HttpGet(serverUrl);
  
         MusicJson musicJson = null;
         try {

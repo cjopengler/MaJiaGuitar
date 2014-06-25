@@ -13,7 +13,7 @@ import java.util.List;
 public interface IGuitarData {
     void updateMusics();
     List<MusicEntity> query();
-    void updateVersion(Versions versions, boolean isNotifyListener);
-    Versions getVersions();
+    void updateVersion(Version version, boolean isNotifyListener);
+    Version getVersion();
 
 }

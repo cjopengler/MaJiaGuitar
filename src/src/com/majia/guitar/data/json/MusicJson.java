@@ -13,7 +13,8 @@ import java.util.List;
 public class MusicJson {
     
     public List<Music> music;
-    public Ver ver;
+    public MusicVersion ver;
+    public int update;
     
     public static class Music {
         public String _id;
@@ -26,10 +27,8 @@ public class MusicJson {
         public String difficulty;
     }
 
-    public static class Ver {
-        public String musics_version_name;
-        public String musics_version_code;
-        public String apk_version_name;
-        public String apk_version_code;
+    public static class MusicVersion {
+        public String version_name;
+        public String version_code;
     }
 }

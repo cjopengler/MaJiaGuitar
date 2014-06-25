@@ -10,7 +10,6 @@ import com.majia.guitar.R;
 import com.majia.guitar.data.IGuitarData;
 import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.service.MusicPlayService;
-import com.majia.guitar.stub.StubData;
 
 import android.content.Context;
 import android.content.Intent;
@@ -34,8 +33,7 @@ public class GuitarMusicListAdapter extends BaseAdapter {
     
     public GuitarMusicListAdapter(Context context) {
         mContext = context;
-        IGuitarData guitarData = StubData.getInstance();
-        mMusicEntities = guitarData.query();
+        mMusicEntities = new ArrayList<MusicEntity>();
     }
     
     public void update(List<MusicEntity> musicEntities) {

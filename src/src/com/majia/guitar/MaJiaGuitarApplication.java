@@ -3,10 +3,8 @@
  */
 package com.majia.guitar;
 
-import com.majia.guitar.service.UpdateService;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 

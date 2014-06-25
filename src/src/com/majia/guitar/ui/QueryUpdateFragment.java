@@ -3,7 +3,6 @@
  */
 package com.majia.guitar.ui;
 
-import com.majia.guitar.service.UpdateService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,10 +20,7 @@ public class QueryUpdateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(getActivity(), UpdateService.class);
-        intent.setAction(UpdateService.QUERY_APK_UPDATE_ACTION);
         
-        getActivity().startService(intent);
         
     }
     

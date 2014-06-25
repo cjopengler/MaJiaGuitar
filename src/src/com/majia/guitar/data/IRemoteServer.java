@@ -15,6 +15,6 @@ import com.majia.guitar.data.json.ApkVersionJson;
  * @author panxu
  * @since 2014-5-25
  */
-public interface IRemoteService {
+public interface IRemoteServer {
     ApkVersionJson queryApkVersion(int versionCode) throws JsonSyntaxException, ClientProtocolException, IOException;
 }

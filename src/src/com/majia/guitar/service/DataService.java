@@ -3,7 +3,7 @@
  */
 package com.majia.guitar.service;
 
-import java.io.FileDescriptor;
+
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -15,17 +15,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.majia.guitar.data.GuitarData;
 import com.majia.guitar.data.MusicEntity;
-import com.majia.guitar.data.Versions;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInterface;
 import android.os.Looper;
-import android.os.Parcel;
-import android.os.RemoteException;
+
 
 /**
  * 

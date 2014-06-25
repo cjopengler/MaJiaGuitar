@@ -20,6 +20,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -158,15 +159,16 @@ public class GuitarData implements IGuitarData {
     @Override
     public List<MusicEntity> query() {
         
-        Versions versions = getVersions();
+        Version version = getVersion();
         
-        if (versions.getMusicVersion().versionCode() == 0) { //没有任何music信息 从网络获取
-            MusicJson musicJson = RemoteMusicServer.getMusics();;
-            
+  
+        MusicJson musicJson = MusicRemoteServer.getMusics(version.versionCode());;
+        
+        if (musicJson != null && musicJson.update == 1) {
             List<MusicEntity> musicEntities = new ArrayList<MusicEntity>();
             
             
-            if (musicJson != null && musicJson.music != null) {
+            if (musicJson.music != null) {
                 for (Music music : musicJson.music) {
                     musicEntities.add(new MusicEntity(music));
                 }
@@ -174,12 +176,11 @@ public class GuitarData implements IGuitarData {
             
             insterMusicsIntoDB(musicEntities);
                 
-            if (musicJson != null && musicJson.ver != null) {
-                updateVersion(new Versions(musicJson.ver), false);
+            if (musicJson.ver != null) {
+                updateVersion(new Version(musicJson.ver.version_name, musicJson.ver.version_code), false);
             }
-        } 
-     
-        
+        }
+      
         List<MusicEntity> retMusicEntities = queryMusicsFromDB();
         
         
@@ -189,8 +190,7 @@ public class GuitarData implements IGuitarData {
  
 
     @Override
-    public Versions getVersions() {
-        Versions versions = null;
+    public Version getVersion() {
 
         SharedPreferences dataSharedPreferences = MaJiaGuitarApplication.getInstance().getSharedPreferences(
                 DATA_SHARE_PAREFENCE_NAME, 0);
@@ -198,55 +198,38 @@ public class GuitarData implements IGuitarData {
         long musicVersionCode = dataSharedPreferences.getLong(MUSIC_VERSION_CODE, 0);
         String musicVersionName = dataSharedPreferences.getString(MUSIC_VERSION_NAME, "0.0.0.0");
 
-        long apkVersionCode = dataSharedPreferences.getLong(APK_VERSION_CODE, 0);
-        String apkVersionName = dataSharedPreferences.getString(APK_VERSION_NAME, "0.0.0.0");
 
         Version musicVersion = new Version(musicVersionName, musicVersionCode);
-        Version apkVersion = new Version(apkVersionName, apkVersionCode);
 
-        versions = new Versions(musicVersion, apkVersion);
 
-        return versions;
+        return musicVersion;
     }
     
 
     @Override
-    public void updateVersion(Versions versions, boolean isNotifyListener) {
+    public void updateVersion(Version version, boolean isNotifyListener) {
 
-        Version oldMusicVersion = null;
-        Version oldApkVersion = null;
-
+    
         SharedPreferences dataSharedPreferences = MaJiaGuitarApplication.getInstance().getSharedPreferences(
                 DATA_SHARE_PAREFENCE_NAME, 0);
 
         long musicVersionCode = dataSharedPreferences.getLong(MUSIC_VERSION_CODE, 0);
-        String musicVersionName = dataSharedPreferences.getString(MUSIC_VERSION_NAME, "0.0.0.0");
-
-        oldMusicVersion = new Version(musicVersionName, musicVersionCode);
-
-        long apkVersionCode = dataSharedPreferences.getLong(APK_VERSION_CODE, 0);
-        String apkVersioName = dataSharedPreferences.getString(APK_VERSION_NAME, "0.0.0.0");
 
         SharedPreferences.Editor dataEditor = dataSharedPreferences.edit();
 
-        oldApkVersion = new Version(apkVersioName, apkVersionCode);
 
-        if (versions.getApkVersion().versionCode() > apkVersionCode) {
-            dataEditor.putLong(APK_VERSION_CODE, versions.getApkVersion().versionCode());
-            dataEditor.putString(APK_VERSION_NAME, versions.getApkVersion().getVersionName());
-        }
 
-        if (versions.getMusicVersion().versionCode() > musicVersionCode) {
-            dataEditor.putLong(MUSIC_VERSION_CODE, versions.getMusicVersion().versionCode());
-            dataEditor.putString(MUSIC_VERSION_NAME, versions.getMusicVersion().getVersionName());
+        if (version.versionCode() > musicVersionCode) {
+            dataEditor.putLong(MUSIC_VERSION_CODE, version.versionCode());
+            if (TextUtils.isEmpty(version.getVersionName())) {
+                dataEditor.putString(MUSIC_VERSION_NAME, "");
+            } else {
+                dataEditor.putString(MUSIC_VERSION_NAME, version.getVersionName());
+            }
+            
         }
 
         dataEditor.commit();
-
-        if (isNotifyListener) {
-            notifyUpdateVersionListener(oldMusicVersion, versions.getMusicVersion(), oldApkVersion,
-                    versions.getApkVersion());
-        }
 
     }
     
