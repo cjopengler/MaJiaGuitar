@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Baidu Inc. All rights reserved.
+ * Copyright (C) 2014 Baidu Inc. All rights reserved.
  */
 package com.majia.guitar.service;
 
@@ -16,78 +16,58 @@ import com.baidu.inf.iis.bcs.model.BCSServiceException;
 import com.baidu.inf.iis.bcs.model.DownloadObject;
 import com.baidu.inf.iis.bcs.request.GetObjectRequest;
 import com.baidu.inf.iis.bcs.response.BaiduBCSResponse;
-import com.majia.guitar.MaJiaGuitarApplication;
-import com.majia.guitar.R;
+import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.data.bcs.BCSConfiguration;
 import com.majia.guitar.data.download.IDownloadData;
 import com.majia.guitar.data.download.MemoryDownloadData;
-import com.majia.guitar.util.Assert;
+import com.majia.guitar.data.download.MusicDownloadData;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * 
  * @author panxu
- * @since 2013-12-30
+ * @since 2014-6-26
  */
-public class DownloadService extends IntentService {
-    
-    public static final String DOWNLOAD_BCS_ACTION = "com.majia.guitar.service.download";
-    public static final String DOWLOAD_BUCKET_PATH = "com.majia.guitar.service.download_url";
-    
-    /**用来生成Apk的名字*/
-    public static final String DOWNLOAD_VERSION_CODE = "com.majia.guitar.service.download_version_code";
-    
-    private static final String TAG = "DownloadService";
-    private static final String SERVICE_NAME = "DownloadService";
-    
-    private static final int BUFFER_MAX_SIZE = 1024 * 2;
-    
-    
-    
-    private IDownloadData mDownloadData = MemoryDownloadData.getInstance();
-    
+public class MusicDownloadService extends IntentService {
 
+    public static final String INTENT_MUSIC_ENTITY = "intent_music_entity";
+    
+    private static final String NAME = "MusicDownloadService";
+    private static final String TAG = "MusicDownloadService";
+
+    private IDownloadData mDownloadData = MusicDownloadData.getInstance();
+    
+    private static final int BUFFER_MAX_SIZE = 1024 * 64;
     /**
      * @param name
      */
-    public DownloadService() {
-        super(SERVICE_NAME);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public MusicDownloadService() {
+        super(NAME);
+        // TODO Auto-generated constructor stub
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        //Uri donwloadUri = intent.getData();
-        String action = intent.getAction();
-        
-        if (action.equals(DOWNLOAD_BCS_ACTION)) {
-            String bucketPath = intent.getStringExtra(DOWLOAD_BUCKET_PATH);
-            int downloadVersionCode = intent.getIntExtra(DOWNLOAD_VERSION_CODE, -1);
-            
-            Assert.assertTrue(!TextUtils.isEmpty(bucketPath));
-            Assert.assertTrue(downloadVersionCode != -1);
-            
-            handleDownload(bucketPath, downloadVersionCode);
-        }
+        handle(intent);
     }
     
-    private void handleDownload(String downloadBucketPath, int downloadVersionCode) {
+    private void handle(Intent intent) {
+        MusicEntity musicEntity = intent.getParcelableExtra(INTENT_MUSIC_ENTITY);
+        
+        Log.d(TAG, "musicEntity" + musicEntity);
+        
+        long downloadVersionCode = musicEntity.getId();
+        String downloadBucketPath = musicEntity.getSoundUrl();
+        
+
 
         RandomAccessFile apkRandomAccessFile = null;
         InputStream inputStream = null;
         String path = "";
+        String tempPath = "";
         int errorCode = IDownloadData.ERROR;
 
         try {
@@ -95,8 +75,12 @@ public class DownloadService extends IntentService {
             BaiduBCS baiduBCS = new BaiduBCS(credentials, BCSConfiguration.host);
             baiduBCS.setDefaultEncoding("UTF-8");
             
-            GetObjectRequest getObjectRequest = new GetObjectRequest(BCSConfiguration.bucket,
-                                                                     "/" + downloadBucketPath);
+            int bucketIndex = downloadBucketPath.indexOf("/");
+            String bucket = downloadBucketPath.substring(0, bucketIndex);
+            String pathInBucket = downloadBucketPath.substring(bucketIndex + 1);
+            
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucket,
+                                                                     "/" + pathInBucket);
             BaiduBCSResponse<DownloadObject> downloadRsp = baiduBCS.getObject(getObjectRequest);
             long totalSize = downloadRsp.getResult().getObjectMetadata().getContentLength();
 
@@ -107,9 +91,10 @@ public class DownloadService extends IntentService {
             File file = this.getExternalFilesDir(null);
             
             if (file != null) {
-                path = file.getPath() + "/" + "yogaguitar_" + downloadVersionCode + ".apk";
+                path = file.getPath() + "/" + "yogaguitar_" + musicEntity.getMusicId() + ".mp3";
+                tempPath = path + ".tmp";
 
-                apkRandomAccessFile = new RandomAccessFile(path, "rw");
+                apkRandomAccessFile = new RandomAccessFile(tempPath, "rw");
 
 
                 apkRandomAccessFile.setLength(totalSize);
@@ -165,7 +150,17 @@ public class DownloadService extends IntentService {
             if (apkRandomAccessFile != null) {
 
                 try {
+                    
                     apkRandomAccessFile.close();
+                    File downloadFile = new File(tempPath);
+                    
+                    if (errorCode == IDownloadData.SUCCESS) {
+                        
+                        downloadFile.renameTo(new File(path));
+                    } else {
+                        downloadFile.delete();
+                    }
+                    
                 } catch (IOException e) {
                     Log.e(TAG, "close failed for io exception " + e.getMessage());
                     errorCode = IDownloadData.ERROR_IO;
@@ -175,12 +170,10 @@ public class DownloadService extends IntentService {
         
         mDownloadData.finish(downloadVersionCode, errorCode, path);
         
-    }
     
-    @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
+        
     }
+
+
 
 }

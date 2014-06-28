@@ -30,6 +30,9 @@ import android.util.Log;
  * @since 2014-2-24
  */
 public class GuitarData implements IGuitarData {
+    
+    private static final String TAG = "GuitarData";
+    
     private static final String DATA_SHARE_PAREFENCE_NAME = "data";
     
     
@@ -231,6 +234,22 @@ public class GuitarData implements IGuitarData {
 
         dataEditor.commit();
 
+    }
+    
+    public void updateMusicLocalUrl(long id, String localUrl) {
+        SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        //values.put(DataOpenHelper.MusicColumn.ID, id);
+        values.put(DataOpenHelper.MusicColumn.SOUND_LOCAL, localUrl);
+        
+        String where = DataOpenHelper.MusicColumn.ID + "=" + id;
+        int row = database.update(DataOpenHelper.GUITAR_MUSIC_TABLE, values, where, null);
+        
+        Log.d(TAG, "row = " + row);
+    }
+    
+    public void updateVideoLocalUrl(long id, String localUrl) {
+        
     }
     
     

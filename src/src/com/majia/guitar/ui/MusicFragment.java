@@ -50,6 +50,13 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
     }
     
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        
+    }
+    
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View musicView = inflater.inflate(R.layout.music_fragment, container, false);
         
@@ -59,7 +66,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         mGuitarMusicListView = (ListView) musicView.findViewById(R.id.guitarMusicListView);
         mGuitarMusicListView.setVisibility(View.GONE);
         
-        mMusicListAdapter = new GuitarMusicListAdapter(this.getActivity());
+        mMusicListAdapter = new GuitarMusicListAdapter(this.getActivity(), mGuitarMusicListView);
         mGuitarMusicListView.setAdapter(mMusicListAdapter);
         
         return musicView;
@@ -104,6 +111,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
     @Override
     public void onDestroy() {
         getActivity().unbindService(mDataServiceConnection);
+        mMusicListAdapter.onDestroy(this);
         super.onDestroy();
     }
     

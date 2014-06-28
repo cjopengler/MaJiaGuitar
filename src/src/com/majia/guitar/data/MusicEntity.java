@@ -3,6 +3,10 @@
  */
 package com.majia.guitar.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+
 import com.majia.guitar.data.json.MusicJson.Music;
 import com.majia.guitar.data.json.MusicTempJson;
 
@@ -12,7 +16,7 @@ import com.majia.guitar.data.json.MusicTempJson;
  * @author panxu
  * @since 2013-12-17
  */
-public class MusicEntity {
+public class MusicEntity implements Parcelable {
     private final long _id;
     private final long music_id;
     private final String name;
@@ -47,6 +51,22 @@ public class MusicEntity {
         this.difficulty = difficulty;
         this.video_url = video_url;
         this.video_local = video_local;
+    }
+    
+    @Override
+    public String toString() {
+        
+        return "(" + 
+                  "_id:" + _id + ", " + 
+                  "music_id:"+ music_id + ", " +
+                  "name:" + name + ", " + 
+                  "music_abstract" + music_abstract + ", " +
+                  "detail: "+ detail + ", " + 
+                  "detail_url: " + detail_url + ", " +
+                  "detail_local: " + detail_local + 
+                  "sound_url: " + sound_url + ", " +
+                  "video_url: " + video_url + ", " + 
+                  "video_local: " + video_local;
     }
     
     public MusicEntity(Music music) {
@@ -86,6 +106,39 @@ public class MusicEntity {
              musicEntity.difficulty, 
              musicEntity.video_url, 
              musicEntity.video_local);
+    }
+    
+    public MusicEntity(Parcel source) {
+        
+        this(source.readLong(), 
+             source.readLong(),
+             source.readString(),
+             source.readString(),
+             source.readString(),
+             source.readString(),
+             source.readString(),
+             source.readString(),
+             source.readString(),
+             source.readInt(),
+             source.readString(),
+             source.readString());
+        
+    }
+    
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
+        dest.writeLong(music_id);
+        dest.writeString(name);
+        dest.writeString(music_abstract);
+        dest.writeString(detail);
+        dest.writeString(detail_url);
+        dest.writeString(detail_local);
+        dest.writeString(sound_url);
+        dest.writeString(sound_local);
+        dest.writeInt(difficulty);
+        dest.writeString(video_url);
+        dest.writeString(video_local);
     }
     
     
@@ -143,4 +196,29 @@ public class MusicEntity {
         super.clone();
         return new MusicEntity(this);
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    
+    
+    
+    /**
+     * Intent传递时序列化
+     */
+    public static final Parcelable.Creator<MusicEntity> CREATOR = new Creator<MusicEntity>() {
+
+      @Override
+      public MusicEntity createFromParcel(Parcel source) {
+        return new MusicEntity(source);
+      }
+
+        @Override
+        public MusicEntity[] newArray(int size) {
+            return new MusicEntity[size];
+        }
+    };
 }

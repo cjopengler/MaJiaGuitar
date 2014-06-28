@@ -31,6 +31,7 @@
         <service android:name=".service.DownloadService"></service>
         <service android:name=".service.DataService"></service>
         <service android:name=".service.UpdateService"></service>
+        <service android:name=".service.MusicDownloadService"></service>
     </application>
 
 </manifest>

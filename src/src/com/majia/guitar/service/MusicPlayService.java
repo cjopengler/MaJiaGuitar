@@ -54,9 +54,9 @@ public class MusicPlayService extends Service
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 
                 String path = uri.toString();
-                AssetFileDescriptor file = this.getAssets().openFd(path);
+                
 
-                mMediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+                mMediaPlayer.setDataSource(path);
                 
                 mMediaPlayer.prepareAsync();
             } catch (IOException e) {
