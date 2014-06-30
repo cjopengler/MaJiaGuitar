@@ -24,6 +24,11 @@
     <string name="software">软件</string>
     <string name="download_finish">下载完成</string>
     
+    <string name="video_instrument">由于使用的服务器是按照流量收费的，\n所以请大家尽量在自己的存储卡允许的情况下，\n先下载，后播放，这样能省些费用，\n如果存储卡较小，使用在线播放</string>
+    <string name="video_local_play">本地播放</string>
+    <string name="video_online_play">在线播放</string>
+    <string name="video_download">视频下载</string>
+    <string name="music_detail">和弦详情</string>
     
     <string name="about_current_version">当前版本：%1$s</string>
     <string name="about_update_apk">立即更新应用</string>
@@ -33,6 +38,8 @@
     <string name="about_download_error_io">下载失败，请检查文件系统是否满</string>
     <string name="about_download_error_net">下载失败，请检查网络</string>
     <string name="about_download_error">下载失败，请重试</string>
+    
+    
     
 
 </resources>

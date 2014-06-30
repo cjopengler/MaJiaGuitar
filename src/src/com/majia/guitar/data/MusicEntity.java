@@ -6,6 +6,7 @@ package com.majia.guitar.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+import android.view.View.OnGenericMotionListener;
 
 import com.majia.guitar.data.json.MusicJson.Music;
 import com.majia.guitar.data.json.MusicTempJson;
@@ -32,6 +33,7 @@ public class MusicEntity implements Parcelable {
     private final int difficulty;
     private final String video_url;
     private final String video_local;
+
     
     public MusicEntity(long _id, long music_id, 
             String name, String music_abstract,

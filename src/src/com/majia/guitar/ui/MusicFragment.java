@@ -24,15 +24,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * 
  * @author panxu
  * @since 2013-12-15
  */
-public class MusicFragment extends Fragment implements IQueryMusicsCallback {
+public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnItemClickListener {
     
     private ListView mGuitarMusicListView;
     
@@ -66,6 +68,8 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         
         mGuitarMusicListView = (ListView) musicView.findViewById(R.id.guitarMusicListView);
         mGuitarMusicListView.setVisibility(View.GONE);
+        
+        mGuitarMusicListView.setOnItemClickListener(this);
         
         mMusicListAdapter = new GuitarMusicListAdapter(this.getActivity(), mGuitarMusicListView);
         mMusicListAdapter.onCreate(this);
@@ -138,5 +142,13 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         mLoadingProgressBar.setVisibility(View.GONE);
         mGuitarMusicListView.setVisibility(View.VISIBLE);
         mMusicListAdapter.update(musics);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        MusicEntity musicEntity = (MusicEntity) mMusicListAdapter.getItem(position);
+        Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
+        intent.putExtra(MusicDetailActivity.MUSIC_ENTITY, musicEntity);
+        startActivity(intent);
     }
 }
