@@ -17,6 +17,9 @@ import com.majia.guitar.data.json.MusicTempJson;
  * @since 2013-12-17
  */
 public class MusicEntity implements Parcelable {
+    
+    public static final long INVALIDATE_ID = -1;
+    
     private final long _id;
     private final long music_id;
     private final String name;

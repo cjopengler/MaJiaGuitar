@@ -54,6 +54,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         super.onCreate(savedInstanceState);
         
         
+        
     }
     
     @Override
@@ -67,6 +68,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback {
         mGuitarMusicListView.setVisibility(View.GONE);
         
         mMusicListAdapter = new GuitarMusicListAdapter(this.getActivity(), mGuitarMusicListView);
+        mMusicListAdapter.onCreate(this);
         mGuitarMusicListView.setAdapter(mMusicListAdapter);
         
         return musicView;

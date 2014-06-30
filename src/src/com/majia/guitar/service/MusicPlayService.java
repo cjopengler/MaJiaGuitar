@@ -5,12 +5,16 @@ package com.majia.guitar.service;
 
 import java.io.IOException;
 
+import com.majia.guitar.data.MusicEntity;
+
+
+import android.R.integer;
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 
 /**
@@ -28,7 +32,14 @@ public class MusicPlayService extends Service
     public static final String CMD_PLAY = "com.majia.guitar.service.play";
     public static final String CMD_STOP = "com.majia.guitar.service.stop";
     
+    public static final String EXTRA_PLAY_ID = "play_id";
+    
     private MediaPlayer mMediaPlayer;
+    private long mPlayingId;
+    private long mPrePlayingId;
+    
+    private IPlayingListener mPlayingListener;
+    
     
     @Override
     public void onCreate() {
@@ -48,7 +59,12 @@ public class MusicPlayService extends Service
         String action = intent.getAction();
         Uri uri = intent.getData();
         
+        
+        
         if (action.equals(CMD_PLAY)) {
+            long playingId = intent.getLongExtra(EXTRA_PLAY_ID, MusicEntity.INVALIDATE_ID);
+            
+            setPlayingId(playingId);
             try {
                 mMediaPlayer.reset();
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -74,11 +90,13 @@ public class MusicPlayService extends Service
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new MusicBinder();
     }
     
     @Override
     public void onDestroy() {
+        
+        setPlayingId(MusicEntity.INVALIDATE_ID);
         
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
@@ -105,15 +123,55 @@ public class MusicPlayService extends Service
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        setPlayingId(MusicEntity.INVALIDATE_ID);
         stopSelf();
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        setPlayingId(MusicEntity.INVALIDATE_ID);
         return false;
+    }
+    
+    
+    /**
+     * binder
+     * 
+     * @author panxu
+     * @since 2014-2-18
+     */
+    public final class MusicBinder extends Binder {
+
+        public MusicPlayService getService() {
+            return MusicPlayService.this;
+        }
     }
 
     
 
+    public static interface IPlayingListener {
+        void onChanged(long prePlayingId, long currentPlayingId);
+    }
+    
+    public void setPlayingListener(IPlayingListener playingListener) {
+        mPlayingListener = playingListener;
+    }
+    
+    public IPlayingListener getPlayingListener() {
+        return mPlayingListener;
+    }
+    
+    private void setPlayingId(long playingId) {
+        mPrePlayingId = mPlayingId;
+        mPlayingId = playingId;
+        
+        if (mPlayingListener != null) {
+            mPlayingListener.onChanged(mPrePlayingId, mPlayingId);
+        }
+    }
+    
+    public long getPlayingId() {
+        return mPlayingId;
+    }
     
 }

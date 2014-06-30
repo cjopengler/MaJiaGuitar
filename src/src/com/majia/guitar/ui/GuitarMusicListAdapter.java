@@ -17,12 +17,18 @@ import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
 import com.majia.guitar.data.download.MusicDownloadData;
 import com.majia.guitar.service.MusicDownloadService;
 import com.majia.guitar.service.MusicPlayService;
+import com.majia.guitar.service.MusicPlayService.IPlayingListener;
+import com.majia.guitar.service.MusicPlayService.MusicBinder;
 
 import android.app.ProgressDialog;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -43,7 +49,8 @@ import android.widget.Toast;
  */
 public class GuitarMusicListAdapter extends BaseAdapter 
                                     implements IDownloadListener,
-                                               IFragmentLifeCycle {
+                                               IFragmentLifeCycle,
+                                               IPlayingListener {
     
     private static final String TAG = "GuitarMusicListAdapter";
 
@@ -53,13 +60,19 @@ public class GuitarMusicListAdapter extends BaseAdapter
     private ProgressDialog mProgressDialog;
     private Handler mUIHandler;
     
+    private ServiceConnection mMusicPlayConnection;
+    private MusicPlayService mMusicPlayService;
+    
     public GuitarMusicListAdapter(Context context, ListView listView) {
         mContext = context;
         mMusicEntities = new ArrayList<MusicEntity>();
         mListView = listView;
         
         mUIHandler = new Handler(Looper.getMainLooper());
-        MusicDownloadData.getInstance().addListener(this);
+        
+        mMusicPlayConnection = null;
+        mMusicPlayService = null;
+        
     }
     
     public void update(List<MusicEntity> musicEntities) {
@@ -107,6 +120,10 @@ public class GuitarMusicListAdapter extends BaseAdapter
         ImageView songImageView = (ImageView) convertView.findViewById(R.id.songImageView);
         songImageView.setTag(musicEntity);
         
+        if (mMusicPlayService != null) {
+            long playingId = mMusicPlayService.getPlayingId();
+            setPlayStatus(MusicEntity.INVALIDATE_ID, playingId);
+        }
         
         songImageView.setOnClickListener(new View.OnClickListener() {
             
@@ -133,8 +150,6 @@ public class GuitarMusicListAdapter extends BaseAdapter
             }
         });
         
-        ViewGroup downloadInfoLayout = (ViewGroup) convertView.findViewById(R.id.musicDownloadInfoLayout);
-        downloadInfoLayout.setVisibility(View.INVISIBLE);
         
         
         return convertView;
@@ -221,12 +236,36 @@ public class GuitarMusicListAdapter extends BaseAdapter
 
     @Override
     public void onCreate(Fragment fragment) {
+        MusicDownloadData.getInstance().addListener(this);
+        
+        if (mMusicPlayConnection == null) {
+            mMusicPlayConnection = new MusicServiceConnection();
+            
+            try {
+            
+            boolean bindOK = mContext.bindService(new Intent(mContext, MusicPlayService.class), 
+                             mMusicPlayConnection, 
+                             Service.BIND_AUTO_CREATE);
+            
+            Log.d(TAG, "bindOK: " + bindOK);
+            } catch (Exception exception) {
+                Log.d(TAG, "exception e: " + exception.getMessage());
+            }
+        }
         
     }
 
     @Override
     public void onDestroy(Fragment fragment) {
         MusicDownloadData.getInstance().removeListener(this);
+        
+        if (mMusicPlayService != null) {
+            mMusicPlayService.setPlayingListener(null);
+        }
+        
+        mContext.unbindService(mMusicPlayConnection);
+        mMusicPlayConnection = null;
+        mMusicPlayService = null;
     }
     
     private boolean playMusic(MusicEntity musicEntity) {
@@ -235,11 +274,13 @@ public class GuitarMusicListAdapter extends BaseAdapter
             File musicFile = new File(musicEntity.getSoundLocal());
             
             if (musicFile != null &&
-                musicFile.exists()) {
+                musicFile.exists() &&
+                musicFile.length() > 0) {
                 
                 Uri uri = Uri.parse(musicEntity.getSoundLocal());
             
                 Intent serviceIntent = new Intent(MusicPlayService.CMD_PLAY, uri, mContext, MusicPlayService.class);
+                serviceIntent.putExtra(MusicPlayService.EXTRA_PLAY_ID, musicEntity.getId());
                 mContext.startService(serviceIntent);
                 
                 isPlayed = true;
@@ -249,4 +290,48 @@ public class GuitarMusicListAdapter extends BaseAdapter
         return isPlayed;
     }
 
+    private class MusicServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMusicPlayService = ((MusicBinder) service).getService();
+            
+            mMusicPlayService.setPlayingListener(GuitarMusicListAdapter.this);
+            
+            long playingId = mMusicPlayService.getPlayingId();
+            
+            setPlayStatus(MusicEntity.INVALIDATE_ID, playingId);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mMusicPlayConnection = null;
+            mMusicPlayService = null;
+        }
+        
+    }
+
+    @Override
+    public void onChanged(long prePlayingId, long currentPlayingId) {
+        setPlayStatus(prePlayingId, currentPlayingId);
+    }
+    
+    private void setPlayStatus(long prePlayingId, long playingId) {
+        View currentPlayingView = mListView.findViewWithTag(playingId);
+        
+
+        if (currentPlayingView != null) {
+            ImageView songImageView = (ImageView) currentPlayingView.findViewById(R.id.songImageView);
+            
+            songImageView.setImageResource(R.drawable.music_pause_selector);
+        }
+        
+        View prePlayingView = mListView.findViewWithTag(prePlayingId);
+        
+        if (prePlayingView != null) {
+            ImageView songImageView = (ImageView) prePlayingView.findViewById(R.id.songImageView);
+            
+            songImageView.setImageResource(R.drawable.music_play_selector);
+        }
+    }
 }
