@@ -13,4 +13,7 @@ import android.support.v4.app.Fragment;
 public interface IFragmentLifeCycle {
     void onCreate(Fragment fragment);
     void onDestroy(Fragment fragment);
+    
+    void onPause(Fragment fragment);
+    void onResume(Fragment fragment);
 }

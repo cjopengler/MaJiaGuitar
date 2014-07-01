@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
+import com.majia.guitar.data.GuitarData.IGuitarDataListener;
+import com.majia.guitar.data.GuitarData;
 import com.majia.guitar.data.IGuitarData;
 import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.data.download.DownloadInfo;
@@ -50,7 +52,8 @@ import android.widget.Toast;
 public class GuitarMusicListAdapter extends BaseAdapter 
                                     implements IDownloadListener,
                                                IFragmentLifeCycle,
-                                               IPlayingListener {
+                                               IPlayingListener,
+                                               IGuitarDataListener {
     
     private static final String TAG = "GuitarMusicListAdapter";
 
@@ -122,7 +125,12 @@ public class GuitarMusicListAdapter extends BaseAdapter
         
         if (mMusicPlayService != null) {
             long playingId = mMusicPlayService.getPlayingId();
-            setPlayStatus(MusicEntity.INVALIDATE_ID, playingId);
+            
+            if (musicEntity.getId() == playingId) {
+                songImageView.setImageResource(R.drawable.music_pause_selector);
+            } else {
+                songImageView.setImageResource(R.drawable.music_play_selector);
+            }
         }
         
         songImageView.setOnClickListener(new View.OnClickListener() {
@@ -130,21 +138,27 @@ public class GuitarMusicListAdapter extends BaseAdapter
             @Override
             public void onClick(View v) {
                 MusicEntity musicEntity = (MusicEntity) v.getTag();
-                
-                if (!playMusic(musicEntity)) {
-                    //下载
-                    if (mProgressDialog == null) {
+                if (mMusicPlayService.getPlayingId() == musicEntity.getId()) {
+                    //正在播放的 再次点击暂停
+                    Intent serviceIntent = new Intent(mContext, MusicPlayService.class);
+                    
+                    serviceIntent.setAction(MusicPlayService.CMD_STOP);
+                    mContext.startService(serviceIntent);
+                } else {
+                    if (!playMusic(musicEntity)) {
+                        //下载
+                        
                         mProgressDialog = new ProgressDialog(mContext);
                         mProgressDialog.setTitle(R.string.downloading);
                         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                         mProgressDialog.setCancelable(false);
+                        
+                        mProgressDialog.show();
+                        
+                        Intent intent = new Intent(mContext, MusicDownloadService.class);
+                        intent.putExtra(MusicDownloadService.INTENT_MUSIC_ENTITY, musicEntity);
+                        mContext.startService(intent);
                     }
-                    
-                    mProgressDialog.show();
-                    
-                    Intent intent = new Intent(mContext, MusicDownloadService.class);
-                    intent.putExtra(MusicDownloadService.INTENT_MUSIC_ENTITY, musicEntity);
-                    mContext.startService(intent);
                 }
                 
             }
@@ -163,79 +177,85 @@ public class GuitarMusicListAdapter extends BaseAdapter
             @Override
             public void run() {
                 int status = downloadInfo.getStatus();
-                
-                View view = mListView.findViewWithTag(id);
-                
-                Log.d(TAG, downloadInfo.toString());
-                
-                if (view != null) {
-                
-                    
-                
-                    switch (status) {
-                    case DownloadInfo.DOWNLOAD_IS_ONGOING:
-                        mProgressDialog.setMax((int) downloadInfo.getTotalSize());
-                        
-                        mProgressDialog.setProgress((int) downloadInfo.getDownloadSize());
-                        break;
-                        
-                    case DownloadInfo.DOWNLOAD_FINISH_SUCCESS:
-                        mProgressDialog.dismiss();
-                        
-                        ImageView songImageView = (ImageView) view.findViewById(R.id.songImageView);
-                        
-                        MusicEntity oldMusicEntity = (MusicEntity) songImageView.getTag();
-                        
-                        MusicEntity updateMusicEntity = new MusicEntity(oldMusicEntity.getId(),
-                                                                        oldMusicEntity.getMusicId(),
-                                                                        oldMusicEntity.getName(), 
-                                                                        oldMusicEntity.getMusicAbstract(), 
-                                                                        oldMusicEntity.getDetail(), 
-                                                                        oldMusicEntity.getDetailUrl(), 
-                                                                        oldMusicEntity.getDetailLocal(), 
-                                                                        oldMusicEntity.getSoundUrl(), 
-                                                                        downloadInfo.getDownloadPath(), 
-                                                                        oldMusicEntity.getDifficulty(), 
-                                                                        oldMusicEntity.getVideoUrl(), 
-                                                                        oldMusicEntity.getVideoUrl());
-                        
-                        int oldIndex = mMusicEntities.indexOf(oldMusicEntity);
-                        
-                        mMusicEntities.remove(oldIndex);
-                        mMusicEntities.add(oldIndex, updateMusicEntity);
-                        playMusic(updateMusicEntity);
-                        
-                        notifyDataSetChanged();
-                        
-                        break;
-                        
-                    case DownloadInfo.DOWNLOAD_FINISH_ERROR:
-                        mProgressDialog.dismiss();
-                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error, Toast.LENGTH_LONG).show();
-                        break;
 
-                    case DownloadInfo.DOWNLOAD_FINISH_IO_ERROR:
-                        mProgressDialog.dismiss();
-                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_io, Toast.LENGTH_LONG).show();
-                        break;
-                    
-                    case DownloadInfo.DOWNLOAD_FINISH_NET_ERROR:
-                        mProgressDialog.dismiss();
-                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_net, Toast.LENGTH_LONG).show();
-                        break;
-            
-                    default:
-                        break;
+                Log.d(TAG, downloadInfo.toString());
+
+                switch (status) {
+                case DownloadInfo.DOWNLOAD_IS_ONGOING:
+                    mProgressDialog.setMax((int) downloadInfo.getTotalSize());
+
+                    mProgressDialog.setProgress((int) downloadInfo.getDownloadSize());
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_SUCCESS:
+                    mProgressDialog.dismiss();
+
+                    MusicEntity oldMusicEntity = null;
+                    for (MusicEntity musicEntity : mMusicEntities) {
+                        if (musicEntity.getId() == id) {
+                            oldMusicEntity = musicEntity;
+                            break;
+                        }
                     }
+
+                    MusicEntity updateMusicEntity = new MusicEntity(oldMusicEntity.getId(),
+                            oldMusicEntity.getMusicId(), oldMusicEntity.getName(), oldMusicEntity.getMusicAbstract(),
+                            oldMusicEntity.getDetail(), oldMusicEntity.getDetailUrl(), oldMusicEntity.getDetailLocal(),
+                            oldMusicEntity.getSoundUrl(), downloadInfo.getDownloadPath(), oldMusicEntity
+                                    .getDifficulty(), oldMusicEntity.getVideoUrl(), oldMusicEntity.getVideoUrl());
+
+                    int oldIndex = mMusicEntities.indexOf(oldMusicEntity);
+
+                    mMusicEntities.remove(oldIndex);
+                    mMusicEntities.add(oldIndex, updateMusicEntity);
+                    playMusic(updateMusicEntity);
+
+                    notifyDataSetChanged();
+
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error,
+                            Toast.LENGTH_LONG).show();
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_IO_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_io,
+                            Toast.LENGTH_LONG).show();
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_NET_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.about_download_error_net,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                    
+                case DownloadInfo.DOWNLOAD_FINISH_NO_SDCARD_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.common_download_error_no_sdcard,
+                            Toast.LENGTH_LONG).show();
+                    break;
+
+                case DownloadInfo.DOWNLOAD_FINISH_NO_ENOUGH_ERROR:
+                    mProgressDialog.dismiss();
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.commond_download_error_no_enough_space,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
                 }
-                
             }
+                
+            
         });
        
     }
 
     @Override
     public void onCreate(Fragment fragment) {
+        GuitarData.getInstance().addListener(this);
         MusicDownloadData.getInstance().addListener(this);
         
         if (mMusicPlayConnection == null) {
@@ -257,6 +277,7 @@ public class GuitarMusicListAdapter extends BaseAdapter
 
     @Override
     public void onDestroy(Fragment fragment) {
+        GuitarData.getInstance().removeListener(this);
         MusicDownloadData.getInstance().removeListener(this);
         
         if (mMusicPlayService != null) {
@@ -266,6 +287,16 @@ public class GuitarMusicListAdapter extends BaseAdapter
         mContext.unbindService(mMusicPlayConnection);
         mMusicPlayConnection = null;
         mMusicPlayService = null;
+    }
+    
+    @Override
+    public void onPause(Fragment fragment) {
+        
+    }
+
+    @Override
+    public void onResume(Fragment fragment) {
+        
     }
     
     private boolean playMusic(MusicEntity musicEntity) {
@@ -313,7 +344,8 @@ public class GuitarMusicListAdapter extends BaseAdapter
 
     @Override
     public void onChanged(long prePlayingId, long currentPlayingId) {
-        setPlayStatus(prePlayingId, currentPlayingId);
+        //setPlayStatus(prePlayingId, currentPlayingId);
+        notifyDataSetChanged();
     }
     
     private void setPlayStatus(long prePlayingId, long playingId) {
@@ -334,4 +366,39 @@ public class GuitarMusicListAdapter extends BaseAdapter
             songImageView.setImageResource(R.drawable.music_play_selector);
         }
     }
+
+    @Override
+    public void onMusicEntityChange(final MusicEntity musicEntity) {
+        
+        mUIHandler.post(new Runnable() {
+            
+            @Override
+            public void run() {
+                updateMusicEnties(musicEntity);
+                
+            }
+        });
+        
+    }
+    
+    private void updateMusicEnties(MusicEntity newMusicEntity) {
+        MusicEntity oldMusicEntity = null;
+        for (MusicEntity musicEntity : mMusicEntities) {
+            if (musicEntity.getId() == newMusicEntity.getId()) {
+                oldMusicEntity = musicEntity;
+                break;
+            }
+        }
+
+       
+
+        int oldIndex = mMusicEntities.indexOf(oldMusicEntity);
+
+        mMusicEntities.remove(oldIndex);
+        mMusicEntities.add(oldIndex, newMusicEntity);
+        
+        notifyDataSetChanged();
+    }
+
+   
 }

@@ -6,10 +6,13 @@ package com.majia.guitar.ui;
 
 import java.io.File;
 
+import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
 import com.majia.guitar.data.GuitarData;
+import com.majia.guitar.data.GuitarData.IGuitarDataListener;
 import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.ui.TitleBarFragment.Args;
+import com.majia.guitar.util.SDCardUtil;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -25,13 +28,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
  * @author panxu
  * @since 2014-6-30
  */
-public class MusicDetailActivity extends FragmentActivity {
+public class MusicDetailActivity extends FragmentActivity implements IGuitarDataListener {
     public static final String MUSIC_ENTITY = "music_entity";
     private static final String TAG = "MusicDetailActivity";
     
@@ -44,11 +48,15 @@ public class MusicDetailActivity extends FragmentActivity {
     private MusicEntity mMusicEntity;
     private DownloadManager mDownloadManager;
     
+    private static final int MAX_VIDEO_AVILIABLE_SIZE = 100 * 1024 * 1024;
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.music_detail_activity);
+        
+        GuitarData.getInstance().addListener(this);
         
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         
@@ -80,6 +88,13 @@ public class MusicDetailActivity extends FragmentActivity {
         mDownloadButton.setOnClickListener(new DownloadOnClickListener());
     }
     
+    @Override
+    protected void onDestroy() {
+        
+        GuitarData.getInstance().removeListener(this);
+        super.onDestroy();
+    }
+    
     private class PlayOnClickListener implements View.OnClickListener {
 
         @Override
@@ -89,15 +104,11 @@ public class MusicDetailActivity extends FragmentActivity {
             
             if (isVideoDownloaded()) {
                uri = Uri.parse(mMusicEntity.getVideoLocal());
+               playVideo(mMusicEntity.getVideoLocal());
             } else {
-               uri = Uri.parse(mMusicEntity.getVideoUrl()); 
+                playVideo(mMusicEntity.getVideoUrl()); 
             }
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-
-            intent.setDataAndType(uri, "video/mp4");
-
-            startActivity(intent);
-
+            
         }
         
     }
@@ -113,6 +124,19 @@ public class MusicDetailActivity extends FragmentActivity {
                 long storageVideoDownloadId = guitarData.queryVideoDownloadId(mMusicEntity.getId());
                 
                 if (storageVideoDownloadId == 0) {
+                    
+                    if (!SDCardUtil.existSDCard()) {
+                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.common_download_error_no_sdcard,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    
+                    if (SDCardUtil.getSDFreeSize() < MAX_VIDEO_AVILIABLE_SIZE) {
+                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.video_space_not_enough,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mMusicEntity.getVideoUrl()));
                     long videoDownloadId = mDownloadManager.enqueue(request);
                     guitarData.updateVideoDownloadId(mMusicEntity.getId(), videoDownloadId);
@@ -153,13 +177,7 @@ public class MusicDetailActivity extends FragmentActivity {
                     switch (status) {
                     case DownloadManager.STATUS_SUCCESSFUL:
                         
-                        Uri uri = Uri.parse(localFile);
-
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-
-                        intent.setDataAndType(uri, "video/mp4");
-
-                        startActivity(intent);
+                        playVideo(localFile);
                         break;
                         
                     case DownloadManager.STATUS_RUNNING:
@@ -219,6 +237,8 @@ public class MusicDetailActivity extends FragmentActivity {
                 
                 //
                 
+            } else {
+                playVideo(mMusicEntity.getVideoLocal());
             }
             
         }
@@ -240,6 +260,27 @@ public class MusicDetailActivity extends FragmentActivity {
             return false;
         }
         
+    }
+
+    @Override
+    public void onMusicEntityChange(MusicEntity newMusicEntity) {
+        mMusicEntity = newMusicEntity;
+        
+        if (isVideoDownloaded()) {
+            mPlayButton.setText(R.string.video_local_play);
+        } else {
+            mPlayButton.setText(R.string.video_online_play);
+        }
+    }
+    
+    private void playVideo(String localUri) {
+        Uri uri = Uri.parse(localUri);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        intent.setDataAndType(uri, "video/mp4");
+
+        startActivity(intent);
     }
 
 }

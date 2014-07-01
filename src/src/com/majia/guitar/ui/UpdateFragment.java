@@ -33,8 +33,8 @@ import android.widget.TextView;
  * @author panxu
  * @since 2013-12-22
  */
-public class UpdateFragment extends Fragment implements IDownloadListener,
-                                                        GuitarData.IGuitarDataListener {
+public class UpdateFragment extends Fragment implements IDownloadListener
+                                                         {
     private static final String TAG = "UpdateFragment";
     
     private TextView mDownloadPercentTextView;
@@ -51,7 +51,6 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         
-        GuitarData.getInstance().addListener(this);
     }
     
     @Override
@@ -104,7 +103,6 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
     
     @Override
     public void onDetach() {
-        GuitarData.getInstance().removeListener(this);
         super.onDetach();
     }
     
@@ -163,9 +161,4 @@ public class UpdateFragment extends Fragment implements IDownloadListener,
         }
     */}
 
-    @Override
-    public void onUpdateVersion(Version oldMusicVersion, Version newMusicVersion, Version oldApkVersion,
-            Version newApkVersion) {
-        
-    }
 }

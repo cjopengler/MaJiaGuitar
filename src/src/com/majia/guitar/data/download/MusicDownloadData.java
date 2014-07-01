@@ -74,9 +74,19 @@ public class MusicDownloadData extends AbstractDownloadData {
             downloadStatus = DownloadInfo.DOWNLOAD_FINISH_NET_ERROR;
             break;
             
+        case IDownloadData.ERROR_NO_SDCARD:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_NO_SDCARD_ERROR;
+            break;
+            
+        case IDownloadData.ERROR_NO_ENOUGH_SPCACE:
+            downloadStatus = DownloadInfo.DOWNLOAD_FINISH_NO_ENOUGH_ERROR;
+            break;
+            
         case IDownloadData.SUCCESS:
             downloadStatus = DownloadInfo.DOWNLOAD_FINISH_SUCCESS;
             break;
+            
+        
 
         default:
             Assert.assertOnly("error code is not exist " + error);

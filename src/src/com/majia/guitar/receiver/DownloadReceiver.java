@@ -41,9 +41,12 @@ public class DownloadReceiver extends BroadcastReceiver {
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                 
                 cursor = downloadManager.query(query);
-                status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
-                downloadedFile = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                while (cursor.moveToNext()) {
+
+                    status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                    reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
+                    downloadedFile = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                }
             } finally {
                 if (cursor != null) {
                     cursor.close();

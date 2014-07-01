@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * 
@@ -39,6 +40,10 @@ public class MusicPlayService extends Service
     private long mPrePlayingId;
     
     private IPlayingListener mPlayingListener;
+    
+    private static final String TAG = "MusicPlayService";
+    
+    
     
     
     @Override
@@ -82,6 +87,7 @@ public class MusicPlayService extends Service
             return START_STICKY_COMPATIBILITY;
         } else if (action.equals(CMD_STOP)) {
             mMediaPlayer.stop();
+            setPlayingId(MusicEntity.INVALIDATE_ID);
             return START_STICKY_COMPATIBILITY;
         } else {
             return super.onStartCommand(intent, flags, startId);
@@ -118,6 +124,7 @@ public class MusicPlayService extends Service
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        Log.d(TAG, "what: " + what + ", extra: " + extra);
         return false;
     }
 
@@ -173,5 +180,6 @@ public class MusicPlayService extends Service
     public long getPlayingId() {
         return mPlayingId;
     }
+    
     
 }

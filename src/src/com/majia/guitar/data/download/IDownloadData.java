@@ -14,6 +14,8 @@ public interface IDownloadData {
     public static final int ERROR = -1;
     public static final int ERROR_IO = -2;
     public static final int ERROR_NETWORK = -3;
+    public static final int ERROR_NO_SDCARD = -4;
+    public static final int ERROR_NO_ENOUGH_SPCACE = -5;
     
     
     DownloadInfo getCurDownloadInfo();

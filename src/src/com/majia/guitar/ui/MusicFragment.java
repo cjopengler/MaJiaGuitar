@@ -99,8 +99,9 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnI
     
     @Override
     public void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
+        Intent serviceIntent = new Intent(this.getActivity(), MusicPlayService.class);
+        serviceIntent.setAction(MusicPlayService.CMD_STOP);
     }
     
     @Override

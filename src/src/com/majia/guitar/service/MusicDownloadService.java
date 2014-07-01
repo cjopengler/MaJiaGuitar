@@ -21,6 +21,7 @@ import com.majia.guitar.data.bcs.BCSConfiguration;
 import com.majia.guitar.data.download.IDownloadData;
 import com.majia.guitar.data.download.MemoryDownloadData;
 import com.majia.guitar.data.download.MusicDownloadData;
+import com.majia.guitar.util.SDCardUtil;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -41,6 +42,8 @@ public class MusicDownloadService extends IntentService {
     private IDownloadData mDownloadData = MusicDownloadData.getInstance();
     
     private static final int BUFFER_MAX_SIZE = 1024 * 64;
+    
+    private static final int MAX_ALIVALIBLE_SPACE = 30 * 1024 * 1024;
     /**
      * @param name
      */
@@ -55,20 +58,35 @@ public class MusicDownloadService extends IntentService {
     }
     
     private void handle(Intent intent) {
+        
+       
+        
         MusicEntity musicEntity = intent.getParcelableExtra(INTENT_MUSIC_ENTITY);
         
         Log.d(TAG, "musicEntity" + musicEntity);
         
         long downloadVersionCode = musicEntity.getId();
+        
+        if (!SDCardUtil.existSDCard()) {
+            mDownloadData.finish(downloadVersionCode, IDownloadData.ERROR_NO_SDCARD, "");
+            return;
+        }
+        
+        if (SDCardUtil.getSDFreeSize() < MAX_ALIVALIBLE_SPACE) {
+            mDownloadData.finish(downloadVersionCode, IDownloadData.ERROR_NO_ENOUGH_SPCACE, "");
+            return;
+        }
+        
         String downloadBucketPath = musicEntity.getSoundUrl();
         
-
 
         RandomAccessFile apkRandomAccessFile = null;
         InputStream inputStream = null;
         String path = "";
         String tempPath = "";
         int errorCode = IDownloadData.ERROR;
+        
+        
 
         try {
             BCSCredentials credentials = new BCSCredentials(BCSConfiguration.accessKey, BCSConfiguration.secretKey);

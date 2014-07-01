@@ -70,13 +70,13 @@ public class GuitarData implements IGuitarData {
         mGuitarDataListeners.remove(listener);
     }
     
-    private void notifyUpdateVersionListener(Version oldMusicVersion, Version newMusicVersion,
-            Version oldApkVersion, Version newApkVersion) {
+    private void notifyEntityUpdateListener(MusicEntity musicEntity) {
         for (IGuitarDataListener listener : mGuitarDataListeners) {
-            listener.onUpdateVersion(oldMusicVersion, newMusicVersion, 
-                    oldApkVersion, newApkVersion);
+            listener.onMusicEntityChange(musicEntity);
         }
     }
+    
+   
 
     @Override
     public void updateMusics() {
@@ -226,6 +226,49 @@ public class GuitarData implements IGuitarData {
     
     }
     
+    private MusicEntity queryByVideoDownloadId(long videodownloadId) {
+        
+        String sql = DataOpenHelper.MusicColumn.VIDEO_DOWNLOAD_ID + " = " + videodownloadId;
+        
+        MusicEntity musicEntity = null;
+        Cursor cursor = null;
+        
+        try {
+            SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
+            cursor = database.query(DataOpenHelper.GUITAR_MUSIC_TABLE, null, sql, null, null, null, null);
+            
+            while (cursor.moveToNext()) {
+                long _id = cursor.getLong(cursor.getColumnIndex(DataOpenHelper.MusicColumn.ID));
+                long musicId = cursor.getLong(cursor.getColumnIndex(DataOpenHelper.MusicColumn.MUSIC_ID));
+                String name = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.NAME));
+                String musicAbstract = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.MUSIC_ABSTRACT));
+                String detail = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL));
+                String detailUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL_IMG_URL));
+                String detailLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DETAIL_IMG_LOCAL));
+                
+                String songUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.SOUND_INTERNAL_URL));
+                String songLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.SOUND_LOCAL));
+                String videoUrl = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.VIDEO_EXTERNAL_URL));
+                String videoLocal = cursor.getString(cursor.getColumnIndex(DataOpenHelper.MusicColumn.VIDEO_LOCAL));
+                int difficulty = cursor.getInt(cursor.getColumnIndex(DataOpenHelper.MusicColumn.DIFFICULTY));
+                
+                musicEntity = new MusicEntity(_id, musicId, 
+                                                          name, musicAbstract, 
+                                                          detail, detailUrl, detailLocal, 
+                                                          songUrl, songLocal, difficulty, 
+                                                          videoUrl, videoLocal);
+                
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        return musicEntity;
+    
+    }
+    
 
     @Override
     public List<MusicEntity> query() {
@@ -314,18 +357,25 @@ public class GuitarData implements IGuitarData {
         int row = database.update(DataOpenHelper.GUITAR_MUSIC_TABLE, values, where, null);
         
         Log.d(TAG, "row = " + row);
+        
+        MusicEntity musicEntity = queryById(id);
+        notifyEntityUpdateListener(musicEntity);
     }
     
-    public void updateVideoLocalUrl(long id, String videoLocalUrl) {
+    public void updateVideoLocalUrl(long downloadId, String videoLocalUrl) {
         SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         //values.put(DataOpenHelper.MusicColumn.ID, id);
         values.put(DataOpenHelper.MusicColumn.VIDEO_LOCAL, videoLocalUrl);
         
-        String where = DataOpenHelper.MusicColumn.VIDEO_DOWNLOAD_ID + "=" + id;
+        String where = DataOpenHelper.MusicColumn.VIDEO_DOWNLOAD_ID + "=" + downloadId;
         int row = database.update(DataOpenHelper.GUITAR_MUSIC_TABLE, values, where, null);
         
         Log.d(TAG, "row = " + row);
+        
+        MusicEntity musicEntity = queryByVideoDownloadId(downloadId);
+        notifyEntityUpdateListener(musicEntity);
+        
     }
     
     public void updateVideoDownloadId(long id, long videoDownloadId) {
@@ -342,8 +392,8 @@ public class GuitarData implements IGuitarData {
     
     
     public static interface IGuitarDataListener {
-        void onUpdateVersion(Version oldMusicVersion, Version newMusicVersion,
-                             Version oldApkVersion, Version newApkVersion);
+        
+        void onMusicEntityChange(MusicEntity musicEntity);
     }
     
     private static class DataOpenHelper extends SQLiteOpenHelper {

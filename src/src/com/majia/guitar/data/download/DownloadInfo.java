@@ -14,7 +14,9 @@ public class DownloadInfo {
     public static final int DOWNLOAD_FINISH_SUCCESS = 3;
     public static final int DOWNLOAD_FINISH_IO_ERROR = 4;
     public static final int DOWNLOAD_FINISH_NET_ERROR = 5;
-    public static final int DOWNLOAD_FINISH_ERROR = 6;
+    public static final int DOWNLOAD_FINISH_NO_SDCARD_ERROR = 6;
+    public static final int DOWNLOAD_FINISH_NO_ENOUGH_ERROR = 7;
+    public static final int DOWNLOAD_FINISH_ERROR = 8;
     
     private final int mStatus;
     
