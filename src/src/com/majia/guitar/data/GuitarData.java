@@ -226,7 +226,7 @@ public class GuitarData implements IGuitarData {
     
     }
     
-    private MusicEntity queryByVideoDownloadId(long videodownloadId) {
+    public MusicEntity queryByVideoDownloadId(long videodownloadId) {
         
         String sql = DataOpenHelper.MusicColumn.VIDEO_DOWNLOAD_ID + " = " + videodownloadId;
         

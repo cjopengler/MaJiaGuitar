@@ -1,5 +1,9 @@
 package com.majia.guitar.receiver;
+import com.majia.guitar.MaJiaGuitarApplication;
+import com.majia.guitar.R;
 import com.majia.guitar.data.GuitarData;
+import com.majia.guitar.data.GuitarData.IGuitarDataListener;
+import com.majia.guitar.data.MusicEntity;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -7,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
+import android.widget.Toast;
 
 /*
  * Copyright (C) 2014 Baidu Inc. All rights reserved.
@@ -55,9 +60,18 @@ public class DownloadReceiver extends BroadcastReceiver {
             
             
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                GuitarData.getInstance().updateVideoLocalUrl(downloadedId, downloadedFile);
+                GuitarData guitarData = GuitarData.getInstance();
+                guitarData.updateVideoLocalUrl(downloadedId, downloadedFile);
+                
+                MusicEntity musicEntity = guitarData.queryByVideoDownloadId(downloadedId);
+                Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+                               MaJiaGuitarApplication.getInstance().getString(R.string.video_download_complete,  musicEntity.getName()), 
+                               Toast.LENGTH_LONG).show();
+                
             }
         }
     }
+
+
 
 }

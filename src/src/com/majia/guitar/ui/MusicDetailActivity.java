@@ -138,10 +138,12 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
                     }
                     
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mMusicEntity.getVideoUrl()));
+                    request.setTitle(mMusicEntity.getName());
                     long videoDownloadId = mDownloadManager.enqueue(request);
                     guitarData.updateVideoDownloadId(mMusicEntity.getId(), videoDownloadId);
                     
                 } else {
+                    //需要查询确定状态 可能是正在下载
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(storageVideoDownloadId);
                     
@@ -176,8 +178,14 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
                     
                     switch (status) {
                     case DownloadManager.STATUS_SUCCESSFUL:
-                        
-                        playVideo(localFile);
+                        if (isVideoDownloaded()) { 
+                            //文件存在 更新数据库并播放
+                            GuitarData.getInstance().updateVideoLocalUrl(storageVideoDownloadId, localFile);
+                            playVideo(localFile);
+                        } else {
+                            //文件不存在重新下载
+                            startDownloadVideo();
+                        }
                         break;
                         
                     case DownloadManager.STATUS_RUNNING:
@@ -253,8 +261,9 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         
         
         File file = new File(mMusicEntity.getVideoLocal());
-        
-        if (file.exists() && file.length() > 0) {
+
+        if (file.exists() && 
+            file.length() > 0) {
             return true;
         } else {
             return false;
@@ -281,6 +290,13 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         intent.setDataAndType(uri, "video/mp4");
 
         startActivity(intent);
+    }
+    
+    private void startDownloadVideo() {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mMusicEntity.getVideoUrl()));
+        request.setTitle(mMusicEntity.getName());
+        long videoDownloadId = mDownloadManager.enqueue(request);
+        GuitarData.getInstance().updateVideoDownloadId(mMusicEntity.getId(), videoDownloadId);
     }
 
 }
