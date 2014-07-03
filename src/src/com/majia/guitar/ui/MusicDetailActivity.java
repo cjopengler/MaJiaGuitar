@@ -294,7 +294,8 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
     
     private void startDownloadVideo() {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mMusicEntity.getVideoUrl()));
-        request.setTitle(mMusicEntity.getName());
+        request.setTitle(mMusicEntity.getName())
+               .setDestinationInExternalFilesDir(MaJiaGuitarApplication.getInstance(), "video", mMusicEntity.getName() + ".mp4");
         long videoDownloadId = mDownloadManager.enqueue(request);
         GuitarData.getInstance().updateVideoDownloadId(mMusicEntity.getId(), videoDownloadId);
     }

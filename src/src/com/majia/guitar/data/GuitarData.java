@@ -84,14 +84,20 @@ public class GuitarData implements IGuitarData {
     }
     
     private void insterMusicsIntoDB(List<MusicEntity> musicEntities) {
+        
+        
+        List<MusicEntity> oldMusicEntities = queryMusicsFromDB();
+        
         SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
         
         for (MusicEntity musicEntity : musicEntities) {
+            
             ContentValues contentValues = new ContentValues();
             
+        
             contentValues.put(DataOpenHelper.MusicColumn.DETAIL, 
                     musicEntity.getDetail());
-            contentValues.put(DataOpenHelper.MusicColumn.DETAIL_IMG_LOCAL, 
+            contentValues.put(DataOpenHelper.MusicColumn.DETAIL_IMG_URL, 
                     musicEntity.getDetailUrl());
             
             contentValues.put(DataOpenHelper.MusicColumn.DIFFICULTY, 
@@ -109,11 +115,50 @@ public class GuitarData implements IGuitarData {
             contentValues.put(DataOpenHelper.MusicColumn.VIDEO_EXTERNAL_URL, 
                     musicEntity.getVideoUrl());
             
+            boolean isUpdate = false;
+            for (MusicEntity oldMusicEntity : oldMusicEntities) {
+                if (musicEntity.getMusicId() == oldMusicEntity.getMusicId()) {
+                    //执行update
+                    isUpdate = true;
+                    
+                    
+                    if (musicEntity.getName().equals(oldMusicEntity.getName()) &&
+                        musicEntity.getDetail().equals(oldMusicEntity.getDetail()) &&
+                        musicEntity.getDetailUrl().equals(oldMusicEntity.getDetailUrl()) &&
+                        musicEntity.getDifficulty() == oldMusicEntity.getDifficulty() && 
+                        musicEntity.getMusicAbstract().equals(oldMusicEntity.getMusicAbstract()) &&
+                        musicEntity.getSoundUrl().equals(oldMusicEntity.getSoundUrl()) &&
+                        musicEntity.getVideoUrl().equals(oldMusicEntity.getVideoUrl())
+                        
+                        ) {
+                        //不需要更新了
+                    } else {
+                        String whereCluase = DataOpenHelper.MusicColumn.MUSIC_ID + " = " + musicEntity.getMusicId();
+                        
+
+                        database.update(DataOpenHelper.GUITAR_MUSIC_TABLE, contentValues, whereCluase, null);
+     
+                        oldMusicEntities.remove(oldMusicEntity);
+                    }
+                    
+                    break;
+                }
+            }
             
-            database.replace(DataOpenHelper.GUITAR_MUSIC_TABLE, 
-                    "", 
-                    contentValues);
+            if (!isUpdate) {
+                //instert
+                contentValues.put(DataOpenHelper.MusicColumn.DETAIL_IMG_LOCAL, "");
+                contentValues.put(DataOpenHelper.MusicColumn.SOUND_EXTERNAL_URL, "");
+                contentValues.put(DataOpenHelper.MusicColumn.SOUND_LOCAL, "");
+                contentValues.put(DataOpenHelper.MusicColumn.VIDEO_DOWNLOAD_ID, 0);
+                contentValues.put(DataOpenHelper.MusicColumn.VIDEO_LOCAL, "");
+                
+                
+                database.insert(DataOpenHelper.GUITAR_MUSIC_TABLE, null, contentValues);
+            }
+            
         }
+        
     }
     
     private List<MusicEntity> queryMusicsFromDB() {
@@ -123,7 +168,7 @@ public class GuitarData implements IGuitarData {
         
         try {
             SQLiteDatabase database = mDataOpenHelper.getWritableDatabase();
-            cursor = database.query(DataOpenHelper.GUITAR_MUSIC_TABLE, null, null, null, null, null, null);
+            cursor = database.query(DataOpenHelper.GUITAR_MUSIC_TABLE, null, null, null, null, null, DataOpenHelper.MusicColumn.MUSIC_ID);
             
             while (cursor.moveToNext()) {
                 long id = cursor.getLong(cursor.getColumnIndex(DataOpenHelper.MusicColumn.ID));
@@ -484,25 +529,7 @@ public class GuitarData implements IGuitarData {
                 Log.e(TAG, "exception: " + exception.getMessage());
             }
             
-           /* db.execSQL("CREATE TABLE IF NOT EXISTS version (" +
-                    "_id INTEGER PRIMARY KEY," +
-                    "musics_version_name TEXT," +
-                    "musics_version_code INTEGER," +
-                    "apk_version_name TEXT," +
-                    "apk_version_code INTEGER," +
-                   ");");
-            
-            
-            
-            db.execSQL("INSERT INTO version (" +
-            		                        "musics_version_name," +
-            		                        "musics_version_code," +
-            		                        "apk_version_name," +
-            		                        "apk_version_code)" +
-            		                        " VALUES ('0.0.0.0', " +
-            		                                  "0, " +
-            		                                  "'0.0.0.0', " +
-            		                                  "0)");*/
+          
 
             
         }
