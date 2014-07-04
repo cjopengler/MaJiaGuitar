@@ -6,6 +6,7 @@ import com.majia.guitar.data.GuitarData.IGuitarDataListener;
 import com.majia.guitar.data.MusicEntity;
 
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -68,6 +69,16 @@ public class DownloadReceiver extends BroadcastReceiver {
                                MaJiaGuitarApplication.getInstance().getString(R.string.video_download_complete,  musicEntity.getName()), 
                                Toast.LENGTH_LONG).show();
                 
+            }
+        } else if (intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
+            try {
+                Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+                downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(downloadManagerIntent);
+            } catch (ActivityNotFoundException exception) {
+                Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+                        R.string.video_download_view_exception, 
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

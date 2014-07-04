@@ -38,11 +38,13 @@
     <string name="about_download_error_io">下载失败，请检查文件系统是否满</string>
     <string name="about_download_error_net">下载失败，请检查网络</string>
     <string name="about_download_error">下载失败，请重试</string>
+   
     
     <string name="common_download_error_no_sdcard">存储卡不可用</string>
     <string name="commond_download_error_no_enough_space">没有足够的存储空间，请清理存储卡再尝试</string>
     <string name="video_space_not_enough">存储空间小于100M，无法下载视频</string>
     <string name="video_download_complete">%1$s下载完成</string>
+     <string name="video_download_view_exception">您的系统问题，无法打开下载管理器</string>
     
     
 
