@@ -21,27 +21,5 @@
         android:layout_centerVertical="true"
         android:text="TextView" />
 
-    <RelativeLayout
-        android:id="@+id/moreLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" >
-
-        <ImageView
-            android:id="@+id/moreImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/titlebar_more_selector" />
-        
-        <ImageView
-            android:id="@+id/updateIndicatorImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@id/moreImageView"
-            android:src="@drawable/icon_news_down_bar_one" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

@@ -47,6 +47,6 @@
     <string name="video_download_complete">%1$s下载完成</string>
      <string name="video_download_view_exception">您的系统问题，无法打开下载管理器</string>
     
-    
+    <string name="more_version_check">版本信息</string>
 
 </resources>

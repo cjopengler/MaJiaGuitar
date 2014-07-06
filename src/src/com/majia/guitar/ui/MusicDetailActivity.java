@@ -11,7 +11,7 @@ import com.majia.guitar.R;
 import com.majia.guitar.data.GuitarData;
 import com.majia.guitar.data.GuitarData.IGuitarDataListener;
 import com.majia.guitar.data.MusicEntity;
-import com.majia.guitar.ui.TitleBarFragment.Args;
+import com.majia.guitar.ui.MainTitleBarFragment.Args;
 import com.majia.guitar.util.SDCardUtil;
 
 import android.app.DownloadManager;
@@ -64,7 +64,7 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Args args = Args.buidArgs().setTitle(R.string.music_detail).setShowBack(true);
-        TitleBarFragment titleBarFragment = TitleBarFragment.newInstance(args);
+        MainTitleBarFragment titleBarFragment = MainTitleBarFragment.newInstance(args);
         ft.add(R.id.titleBarContainer, titleBarFragment);
         ft.commit();
         

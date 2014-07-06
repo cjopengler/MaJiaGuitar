@@ -46,7 +46,14 @@
             </intent-filter>
             
         </receiver>
-        <service android:name=".service.ApkUpdateService"></service>
+        <service android:name=".service.ApkUpdateService"
+            ></service>
+        
+        <activity android:name=".ui.MoreActivity"
+            android:screenOrientation="portrait" ></activity>
+        
+        <activity android:name=".ui.VersionInfoActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

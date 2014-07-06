@@ -45,7 +45,7 @@ import android.widget.Toast;
  * @author panxu
  * @since 2014-5-25
  */
-public class AboutFragment extends Fragment implements IDownloadListener {
+public class VersionInfoFragment extends Fragment implements IDownloadListener {
     
     private static final String TAG = "AboutFragment";
     
@@ -62,8 +62,8 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     private ApkUpdateService mApkUpdateService;
     private ApkUpdateServiceConnection mApkUpdateServiceConnection;
     
-    public static AboutFragment newInstance() {
-        return new AboutFragment();
+    public static VersionInfoFragment newInstance() {
+        return new VersionInfoFragment();
     }
     
     @Override
@@ -85,7 +85,7 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.about_fragment, container, false);
+        View view = inflater.inflate(R.layout.versin_info_fragment, container, false);
         
         mCurrentVersionTextView = (TextView) view.findViewById(R.id.currentVersionTextView);
         
@@ -144,7 +144,7 @@ public class AboutFragment extends Fragment implements IDownloadListener {
             
         
             
-            MemoryDownloadData.getInstance().addListener(AboutFragment.this);
+            MemoryDownloadData.getInstance().addListener(VersionInfoFragment.this);
             
            
             Intent downloadApkIntent = new Intent(getActivity(), DownloadService.class);
@@ -257,15 +257,15 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     
     private static class CheckApkUpdateListener extends AbstractRequestListener<ApkVersion> {
 
-    	private final WeakReference<AboutFragment> mWeakReference;
+    	private final WeakReference<VersionInfoFragment> mWeakReference;
     	
-    	public CheckApkUpdateListener(AboutFragment fragment) {
-    		mWeakReference = new WeakReference<AboutFragment>(fragment);
+    	public CheckApkUpdateListener(VersionInfoFragment fragment) {
+    		mWeakReference = new WeakReference<VersionInfoFragment>(fragment);
     	}
     	
 		@Override
 		public void onResponse(RequestResult result, ApkVersion content) {
-			AboutFragment fragment = mWeakReference.get();
+			VersionInfoFragment fragment = mWeakReference.get();
 			
 			if (fragment != null && fragment.isAdded()) {
 				fragment.mProgressDialog.dismiss();

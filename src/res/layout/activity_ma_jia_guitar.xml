@@ -11,40 +11,10 @@
         android:layout_height="wrap_content" >
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-        
-        <FrameLayout
-        android:id="@+id/content_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
-
-            
-
-        </FrameLayout>
-        
-        
-        <fragment
-            android:id="@+id/fragment3"
-            android:name="com.majia.guitar.ui.TabFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0" />
-        
-        
-
-    </LinearLayout>
-    
     <fragment
-                android:id="@+id/queryUpdateFragment"
-                android:name="com.majia.guitar.ui.QueryUpdateFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-    
-    
+        android:id="@+id/musicFragment"
+        android:name="com.majia.guitar.ui.MusicFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
