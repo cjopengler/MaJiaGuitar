@@ -23,6 +23,7 @@
     <string name="version">版本:%1$</string>
     <string name="software">软件</string>
     <string name="download_finish">下载完成</string>
+    <string name="current_is_newest_version">当前已经是最新版本</string>
     
     <string name="video_instrument">由于使用的服务器是按照流量收费的，\n所以请大家尽量在自己的存储卡允许的情况下，\n先下载，后播放，这样能省些费用，\n如果存储卡较小，使用在线播放</string>
     <string name="video_local_play">本地播放</string>

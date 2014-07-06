@@ -269,6 +269,10 @@ public class VersionInfoFragment extends Fragment implements IDownloadListener {
 			
 			if (fragment != null && fragment.isAdded()) {
 				fragment.mProgressDialog.dismiss();
+				
+				if (content.versionCode == MaJiaGuitarApplication.getInstance().getVersionCode()) {
+					Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.current_is_newest_version, Toast.LENGTH_SHORT).show();
+				}
 				fragment.setApkUpdateUI();
 				
 			}

@@ -80,7 +80,6 @@ public class ApkUpdateService extends MultiThreadIntentService {
 					
 					ApkVersionJson apkVersionJson = MusicRemoteServer.getInstance().
 																	  queryApkVersion(currentVersionCode);
-				
 					apkVersion = new ApkVersion(apkVersionJson);
 					UpdateApkVersion.getInstance().setApkVersion(apkVersion);
 					
