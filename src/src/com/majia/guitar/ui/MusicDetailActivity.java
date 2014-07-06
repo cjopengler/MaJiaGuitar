@@ -14,8 +14,11 @@ import com.majia.guitar.data.MusicEntity;
 import com.majia.guitar.ui.MainTitleBarFragment.Args;
 import com.majia.guitar.util.SDCardUtil;
 
+import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
@@ -27,6 +30,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +48,7 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
     private TextView mMusicView;
     private Button mPlayButton;
     private Button mDownloadButton;
+    private ImageView mVideoPlayImageView;
     
     private MusicEntity mMusicEntity;
     private DownloadManager mDownloadManager;
@@ -72,10 +77,13 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         mMusicView = (TextView) findViewById(R.id.musicTextView);
         mPlayButton = (Button) findViewById(R.id.playButton);
         mDownloadButton = (Button) findViewById(R.id.downloadButton);
+        mVideoPlayImageView = (ImageView) findViewById(R.id.videoPlayImageView);
+        
         
         mNameTextView.setText(mMusicEntity.getName());
         mMusicView.setText(mMusicEntity.getMusicAbstract());
         
+        mVideoPlayImageView.setOnClickListener(new VideoPlayOnClickListener());
         
         if (isVideoDownloaded()) {
             mPlayButton.setText(R.string.video_local_play);
@@ -86,6 +94,173 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         
         mPlayButton.setOnClickListener(new PlayOnClickListener());
         mDownloadButton.setOnClickListener(new DownloadOnClickListener());
+    }
+    
+    private class VideoPlayOnClickListener implements android.view.View.OnClickListener {
+
+		@Override
+		public void onClick(View view) {
+			if (isVideoDownloaded()) {
+				//直接播放本地
+				 playVideo(mMusicEntity.getVideoLocal());
+			} else {
+				//弹出dialog询问下载还是在线播放还是取消
+				AlertDialog.Builder builder = new AlertDialog.Builder(MusicDetailActivity.this);
+				
+				builder.setMessage(R.string.video_instrument)
+					   .setTitle(mMusicEntity.getName())
+					   .setIcon(R.drawable.icon_music)
+					   .setNegativeButton(R.string.cancle, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							
+						}
+					})
+					 .setPositiveButton(R.string.video_online_play, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							playVideo(mMusicEntity.getVideoUrl()); 
+						}
+					})
+				     .setNeutralButton(R.string.video_download, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+
+				            //应该做一个异步处理
+				            if (!isVideoDownloaded()) {
+				                GuitarData guitarData = GuitarData.getInstance();
+				                
+				                long storageVideoDownloadId = guitarData.queryVideoDownloadId(mMusicEntity.getId());
+				                
+				                if (storageVideoDownloadId == 0) {
+				                    
+				                    if (!SDCardUtil.existSDCard()) {
+				                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.common_download_error_no_sdcard,
+				                                Toast.LENGTH_LONG).show();
+				                        return;
+				                    }
+				                    
+				                    if (SDCardUtil.getSDFreeSize() < MAX_VIDEO_AVILIABLE_SIZE) {
+				                        Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.video_space_not_enough,
+				                                Toast.LENGTH_LONG).show();
+				                        return;
+				                    }
+				                    
+				                    startDownloadVideo();
+				                    
+				                } else {
+				                    //需要查询确定状态 可能是正在下载
+				                    DownloadManager.Query query = new DownloadManager.Query();
+				                    query.setFilterById(storageVideoDownloadId);
+				                    
+				                    Cursor cursor = null;
+				                    int status = 0;
+				                    int reason = 0;
+				                    String downloadedUri = "";
+				                    String localUri = "";
+				                    String localFile = "";
+				                    
+				                    try {
+				                        
+				                        cursor = mDownloadManager.query(query);
+				                        
+				                        while (cursor.moveToNext()) {
+
+				                            status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+				                            reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON));
+				                            downloadedUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI));
+				                            localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+				                            localFile = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+				                        }
+				                    } catch(Exception exception){
+				                        Log.d(TAG, "excepiton: " + exception.getMessage());
+				                    }
+				                    
+				                    finally {
+				                        if (cursor != null) {
+				                            cursor.close();
+				                        }
+				                    }
+				                    
+				                    switch (status) {
+				                    case DownloadManager.STATUS_SUCCESSFUL:
+				                        if (isVideoDownloaded()) { 
+				                            //文件存在 更新数据库并播放
+				                            GuitarData.getInstance().updateVideoLocalUrl(storageVideoDownloadId, localFile);
+				                            playVideo(localFile);
+				                        } else {
+				                            //文件不存在重新下载
+				                            startDownloadVideo();
+				                        }
+				                        break;
+				                        
+				                    case DownloadManager.STATUS_RUNNING:
+				                    	Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+				                    				   getString(R.string.video_is_downloading, mMusicEntity.getName()), 
+				                    				   Toast.LENGTH_LONG)
+				                    				   .show();
+				                        break;
+				                        
+				                    case DownloadManager.STATUS_PENDING:
+				                    	Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+			                    				   getString(R.string.video_is_wait_download, mMusicEntity.getName()), 
+			                    				   Toast.LENGTH_LONG)
+			                    				   .show();
+				                        break;
+				                        
+				                    case DownloadManager.STATUS_PAUSED:
+				                    case DownloadManager.STATUS_FAILED:
+				                    {
+				                        switch (reason) {
+				                        case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+				                        case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
+				                        case DownloadManager.ERROR_FILE_ERROR:
+				                        case DownloadManager.ERROR_HTTP_DATA_ERROR:
+				                        case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+				                        case DownloadManager.ERROR_CANNOT_RESUME:
+				                        case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+				                        case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+				                        case DownloadManager.ERROR_UNKNOWN:
+
+				                        default:
+				                        	 try {
+				                                 Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+				                                 downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				                                 startActivity(downloadManagerIntent);
+				                             } catch (ActivityNotFoundException exception) {
+				                                 Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+				                                         R.string.video_download_view_exception, 
+				                                         Toast.LENGTH_LONG).show();
+				                             }
+				                            break;
+				                        }
+				                    }
+				                        break;
+				                    
+				                   
+				                    default:
+				                        break;
+				                    }
+				                    
+				                    
+				                }
+				                
+				                //
+				                
+				            } else {
+				                playVideo(mMusicEntity.getVideoLocal());
+				            }
+				            
+				        
+						}
+					});
+				
+			}
+		}
+    	
     }
     
     @Override

@@ -12,6 +12,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/infoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleBarContainer"
@@ -35,40 +36,43 @@
             android:text="音乐和弦"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/infoLayout"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/music_detail_play_bg" >
+
+        <Button
+            android:id="@+id/downloadButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/video_instrument"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:text="@string/video_download" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" >
+            android:layout_alignLeft="@+id/downloadButton"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:text="@string/video_online_play" />
 
-            <Button
-                android:id="@+id/playButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="@string/video_online_play" />
+        <ImageView
+            android:id="@+id/videoPlayImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/downloadButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/music_detail_video_play_selector" />
 
-            <Button
-                android:id="@+id/downloadButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="@string/video_download" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
