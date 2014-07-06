@@ -34,6 +34,7 @@ import com.majia.guitar.util.MusicLog;
  * @author panxu
  * @since 2014-2-24
  */
+
 public class MusicRemoteServer implements IRemoteServer {
     
     private static final String HOST_URL = "http://yogaguitar.duapp.com/";
@@ -113,7 +114,6 @@ public class MusicRemoteServer implements IRemoteServer {
         }
         
     }
-
 
 
     @SuppressLint("DefaultLocale")

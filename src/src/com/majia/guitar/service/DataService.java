@@ -69,6 +69,8 @@ public class DataService extends Service {
         return mExecutorService.submit(new QueryMusicsCallable(queryMusicsCallback));
     }
     
+    
+    
     @Override
     public void onDestroy() {
         mExecutorService.shutdown();

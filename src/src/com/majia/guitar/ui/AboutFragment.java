@@ -3,6 +3,8 @@
  */
 package com.majia.guitar.ui;
 
+import java.lang.ref.WeakReference;
+
 import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
 import com.majia.guitar.data.ApkVersion;
@@ -10,16 +12,24 @@ import com.majia.guitar.data.UpdateApkVersion;
 import com.majia.guitar.data.download.DownloadInfo;
 import com.majia.guitar.data.download.IDownloadData.IDownloadListener;
 import com.majia.guitar.data.download.MemoryDownloadData;
+import com.majia.guitar.service.AbstractRequestListener;
+import com.majia.guitar.service.ApkUpdateService;
+import com.majia.guitar.service.ApkUpdateService.ApkUpdateServiceBinder;
 import com.majia.guitar.service.DownloadService;
+import com.majia.guitar.service.RequestResult;
 import com.majia.guitar.util.Assert;
 
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.app.TabActivity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,8 +59,28 @@ public class AboutFragment extends Fragment implements IDownloadListener {
     
     private final Handler mUiHandler = new Handler(MaJiaGuitarApplication.getInstance().getMainLooper());
 
+    private ApkUpdateService mApkUpdateService;
+    private ApkUpdateServiceConnection mApkUpdateServiceConnection;
+    
     public static AboutFragment newInstance() {
         return new AboutFragment();
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    	// TODO Auto-generated method stub
+    	super.onCreate(savedInstanceState);
+    }
+    
+    @Override
+    public void onDestroy() {
+    	
+    	if (mApkUpdateServiceConnection != null) {
+    		getActivity().unbindService(mApkUpdateServiceConnection);
+    		mApkUpdateService = null;
+    		mApkUpdateServiceConnection = null;
+    	}
+    	super.onDestroy();
     }
     
     @Override
@@ -70,7 +100,13 @@ public class AboutFragment extends Fragment implements IDownloadListener {
         
         mUpdateVersionButton = (Button) view.findViewById(R.id.updateApkButton);
         
-        int currentVersionCode = MaJiaGuitarApplication.getInstance().getVersionCode();
+        setApkUpdateUI();
+        
+        return view;
+    }
+    
+    private void setApkUpdateUI() {
+    	int currentVersionCode = MaJiaGuitarApplication.getInstance().getVersionCode();
         
         ApkVersion apkVersion = UpdateApkVersion.getInstance().getApkVersion();
         
@@ -86,41 +122,21 @@ public class AboutFragment extends Fragment implements IDownloadListener {
             mUpdateVersionButton.setOnClickListener(new CheckApkOnClickListener());
             mUpdateVersionButton.setText(R.string.about_check_update_apk);
         }
-        
-        return view;
     }
     
     private class UpdateApkOnClickListener implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(getActivity());
-                mProgressDialog.setIconAttribute(android.R.attr.alertDialogIcon);
-                mProgressDialog.setTitle(R.string.about_downloading_apk);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                
-                
-                
-                /*mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                        getText(R.string.about_apk_install), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                         User clicked Yes so do some stuff 
-                    }
-                });
-                
-                
-                
-                mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-                        getText(R.string.cancle), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //getActivity().stopService(name);
-                    }
-                });*/
-                
-                mProgressDialog.setCancelable(false);
-            }
+            
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setIconAttribute(android.R.attr.alertDialogIcon);
+            mProgressDialog.setTitle(R.string.about_downloading_apk);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            
+            
+            mProgressDialog.setCancelable(false);
+            
             ApkVersion apkVersion = UpdateApkVersion.getInstance().getApkVersion();
             
             mProgressDialog.setMax(apkVersion.apkSize);
@@ -145,7 +161,22 @@ public class AboutFragment extends Fragment implements IDownloadListener {
 
         @Override
         public void onClick(View v) {
+        	mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setTitle(R.string.about_checking_update_apk);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             
+            
+            mProgressDialog.setCancelable(true);
+            mProgressDialog.show();
+            
+            if (mApkUpdateService == null) {
+            	mApkUpdateServiceConnection = new ApkUpdateServiceConnection();
+            	getActivity().bindService(new Intent(getActivity(), ApkUpdateService.class), 
+            							  mApkUpdateServiceConnection, 
+            							  Service.BIND_AUTO_CREATE);
+            } else {
+            	doCheckApkUpdate();
+            }
         }
         
     }
@@ -199,5 +230,49 @@ public class AboutFragment extends Fragment implements IDownloadListener {
         });
         
        
+    }
+    
+    private void doCheckApkUpdate() {
+    	mApkUpdateService.checkApkUpdate(new CheckApkUpdateListener(this));
+    }
+    
+    private class ApkUpdateServiceConnection implements ServiceConnection {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder binder) {
+			ApkUpdateServiceBinder apkUpdateServiceBinder = (ApkUpdateServiceBinder) binder;
+			mApkUpdateService = apkUpdateServiceBinder.getApkUpdateService();
+			
+			doCheckApkUpdate();
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mApkUpdateService = null;
+			mApkUpdateServiceConnection = null;
+			
+		}
+    	
+    }
+    
+    private static class CheckApkUpdateListener extends AbstractRequestListener<ApkVersion> {
+
+    	private final WeakReference<AboutFragment> mWeakReference;
+    	
+    	public CheckApkUpdateListener(AboutFragment fragment) {
+    		mWeakReference = new WeakReference<AboutFragment>(fragment);
+    	}
+    	
+		@Override
+		public void onResponse(RequestResult result, ApkVersion content) {
+			AboutFragment fragment = mWeakReference.get();
+			
+			if (fragment != null && fragment.isAdded()) {
+				fragment.mProgressDialog.dismiss();
+				fragment.setApkUpdateUI();
+				
+			}
+		}
+    	
     }
 }

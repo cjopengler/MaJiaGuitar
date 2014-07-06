@@ -19,7 +19,6 @@
             android:src="@drawable/icon_guitar" />
 
         <TextView
-            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/guitarMusicImageView"
@@ -43,7 +42,6 @@
             android:src="@drawable/icon_favorite" />
 
         <TextView
-            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/favoriteImageView"
@@ -67,7 +65,6 @@
             android:src="@drawable/icon_update" />
 
         <TextView
-            android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/updateImageView"
@@ -78,7 +75,6 @@
     </RelativeLayout>
     
     <RelativeLayout
-        android:id="@+id/aboutLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
@@ -102,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="false"
                 android:layout_alignRight="@id/aboutImageView"
-                android:src="@drawable/icon_news_down_bar_one" />
+                android:src="@drawable/icon_news_down_bar_one"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

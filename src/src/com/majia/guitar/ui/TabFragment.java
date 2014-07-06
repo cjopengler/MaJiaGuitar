@@ -10,6 +10,8 @@ import com.majia.guitar.data.IUpdateApkVersion.UpdateListener;
 import com.majia.guitar.data.UpdateApkVersion;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
  */
 public class TabFragment extends Fragment implements UpdateListener {
     private ImageView mApkUpdateImageView;
+    private Handler mUIHandler = new Handler(Looper.getMainLooper());
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,13 @@ public class TabFragment extends Fragment implements UpdateListener {
 
     @Override
     public void onUpdate(ApkVersion apkVersion) {
-        mApkUpdateImageView.setVisibility(View.VISIBLE);
+    	mUIHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				mApkUpdateImageView.setVisibility(View.VISIBLE);
+			}
+		});
+        
     }
 }

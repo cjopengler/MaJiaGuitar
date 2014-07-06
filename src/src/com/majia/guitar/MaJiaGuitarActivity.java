@@ -4,11 +4,13 @@ package com.majia.guitar;
 import java.io.File;
 import java.io.FileInputStream;
 
+import com.majia.guitar.service.ApkUpdateService;
 import com.majia.guitar.ui.MusicFragment;
 import com.majia.guitar.ui.TitleBarFragment;
 import com.majia.guitar.ui.TitleBarFragment.Args;
 import com.majia.guitar.util.MusicLog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
@@ -29,21 +31,28 @@ public class MaJiaGuitarActivity extends FragmentActivity {
         
         setContentView(R.layout.activity_ma_jia_guitar);
         
+        if (savedInstanceState == null) {
         
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(R.id.content_container, MusicFragment.newInstance());
+	        FragmentManager fragmentManager = getSupportFragmentManager();
+	        FragmentTransaction ft = fragmentManager.beginTransaction();
+	        ft.add(R.id.content_container, MusicFragment.newInstance());
+	        
+	        Args titleBarArgs = Args.buidArgs()
+	                                .setTitle(R.string.yoga_guitar)
+	                                .setShowBack(false);
+	        
+	        TitleBarFragment titleBarFragment = TitleBarFragment.newInstance(titleBarArgs);
+	        
+	        ft.add(R.id.titleBarContainer, titleBarFragment);
+	        ft.commit();
+        }
         
-        Args titleBarArgs = Args.buidArgs()
-                                .setTitle(R.string.yoga_guitar)
-                                .setShowBack(false);
+        Intent apkUpdateCheckIntent = new Intent(this, ApkUpdateService.class);
         
-        TitleBarFragment titleBarFragment = TitleBarFragment.newInstance(titleBarArgs);
-        
-        ft.add(R.id.titleBarContainer, titleBarFragment);
-        ft.commit();
-        
+        apkUpdateCheckIntent.setAction(ApkUpdateService.CHECK_APK_UPDATE_ACTION);
+        startService(apkUpdateCheckIntent);
        
+        
     }
 
 }
