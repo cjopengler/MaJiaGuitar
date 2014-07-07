@@ -1,7 +1,188 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="title_bar_height">48dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="main_router_status_right_margin">10dp</dimen>
+    <dimen name="main_setting_top_margin">10dp</dimen>
+    <dimen name="main_router_name_top_margin">10dp</dimen>
+    <dimen name="main_router_speed_bottom_margin">10dp</dimen>
+    <dimen name="main_router_remote_or_local_bottom_margin">10dp</dimen>
+    <dimen name="main_connecting_status_top_margin">30dp</dimen>
+    <dimen name="main_function_info_top_margin">1dp</dimen>
+    <dimen name="main_function_bottom_text_padding">10dp</dimen>
+    <dimen name="main_setting_padding">10dp</dimen>
+    <dimen name="main_status_speed_divider_magin">4dp</dimen>
 
+    <!-- 公共组件属性 -->
+    <dimen name="common_text_size_large">17sp</dimen>
+    <dimen name="common_text_size">15sp</dimen>
+    <dimen name="common_text_size_sub">12sp</dimen>
+    <dimen name="common_text_size_mini">9sp</dimen>
+    <!-- tv dongle begin 对话框宽度 -->
+    <dimen name="pop_dialog_width">320dp</dimen>
+    <dimen name="pop_dialog_checkbox_padding">35dp</dimen>
+    <dimen name="search_dongle_icon_vertical_margin">54dp</dimen>
+    <!-- tv dongle end -->
+    <!-- 远程下载 dimens begin -->
+    <dimen name="rotate_progress_rectangle_width">35dip</dimen>
+    <dimen name="rotate_progress_rectangle_height">35dip</dimen>
+    <dimen name="rotate_progress_width">2dip</dimen>
+    <dimen name="pull_down_refresh_bar_padding">50dp</dimen>
+    <!-- 远程下载 dimens end -->
+    <!-- 导引页面 -->
+    <dimen name="page_indicator_margin">5dip</dimen>
+    <!-- 字幕 -->
+    <dimen name="subtitle_font_size">24sp</dimen>
+    <dimen name="subtitle_setting_font">17dip</dimen>
+    <dimen name="subtitle_setting_width">277.5dip</dimen>
+    <dimen name="subtitle_setting_height">165dip</dimen>
+    <!-- video player -->
+    <dimen name="text_size_amazing_large">25dip</dimen>
+    <dimen name="quality_box_width">40dip</dimen>
+    <dimen name="quality_box_height">70dip</dimen>
+    <dimen name="voice_seekbar_width">60dip</dimen>
+    <dimen name="voice_seekbar_height">140dip</dimen>
+    <dimen name="popwindow_bottom_gap">5dip</dimen>
+    <dimen name="dlna_controller_panel_margin_top">5dip</dimen>
+
+    <!-- 设置界面 -->
+    <dimen name="setting_padding">10dip</dimen>
+    <!-- 设置页item图标到标题间距 YQH 20130311 -->
+    <dimen name="setting_item_icon_title_padding">10dip</dimen>
+    <!-- 设置页item图标到标题间距 YQH 20130311 -->
+    <dimen name="setting_item_icon_padding">8.5dip</dimen>
+    <dimen name="setting_item_icon_width">34.5dp</dimen>
+    <dimen name="setting_item_height">50.5dp</dimen>
+    <dimen name="setting_items_padding_top">14.5dp</dimen>
+    
+    
+
+    <!-- 网盘资源 -->
+    <dimen name="netdisk_text_size_tiny">9dip</dimen>
+    <dimen name="netdisk_text_size_middle">16dip</dimen>
+    <dimen name="netdisk_text_size_large">18dip</dimen>
+    <dimen name="netdisk_horizontal_scroll_menu_height">60dp</dimen>
+    <dimen name="netdisk_horizontal_menu_item_width">32dp</dimen>
+    <dimen name="netdisk_menu_item_btn_width">24dp</dimen>
+    <!-- 相册浏览浮层底部按钮区域高度 YQH 20121019 -->
+    <dimen name="netdisk_imagepager_title_layout_heigth">45dip</dimen>
+    <dimen name="netdisk_imagepager_title_paddind">6dip</dimen>
+    <dimen name="netdisk_imagepager_bottonAndText_heigth">60dip</dimen>
+    <dimen name="netdisk_imagepager_bottons_paddingbottom">2dip</dimen>
+
+    <!-- 连接设备 -->
+    <dimen name="connect_device_detail_padding_left">10dp</dimen>
+    <dimen name="connect_device_detail_padding_right">20dp</dimen>
+    <dimen name="connect_device_detail_padding_top">5dp</dimen>
+    <dimen name="connect_device_detail_padding_bottom">5dp</dimen>
+    <dimen name="connect_device_detail_item_height">50dp</dimen>
+    
+    <dimen name="connected_device_detail_padding_left">14.5dp</dimen>
+    <dimen name="connected_device_detail_padding_top">26.5dp</dimen>
+    <dimen name="connected_device_detail_item_height">72dp</dimen>
+    <dimen name="connect_device_detail_item_text_padding_left">14.5dp</dimen>
+        <dimen name="connect_device_detail_item_text_padding_inter">8dp</dimen>
+    <dimen name="connect_device_list_top_padding">30dp</dimen>
+    <dimen name="connect_device_list_name_top_padding">13dp</dimen>
+    <dimen name="connect_device_detail_height">220dp</dimen>
+    <dimen name="connect_device_item_height">64dp</dimen>
+        <dimen name="connect_device_detail_icon_top_padding">45dp</dimen>
+    <dimen name="connect_device_detail_icon_bottom_padding">46.5dp</dimen>
+    <dimen name="connect_device_detail_mac_bottom_padding">25dp</dimen>
+    <dimen name="connect_device_detail_more_right_padding">10dp</dimen>
+    <dimen name="connect_device_detail_item_icon_right_padding">15dp</dimen>
+    <!-- toggle button 通用宽高 -->
+    <dimen name="toggle_width">65.5dp</dimen>
+    <dimen name="toggle_height">28dp</dimen>
+    <!-- 下载界面 -->
+    <dimen name="download_delete_bg_height">60dp</dimen>
+    <dimen name="download_delete_btn_height">40dp</dimen>
+    <dimen name="download_delete_bg_padding">10dp</dimen>
+    <!-- wifi设置界面 -->
+    <dimen name="setting_wifi_layout_margin_top">20dp</dimen>
+    <dimen name="setting_wifi_layout_padding_top">20dp</dimen>
+    <dimen name="setting_wifi_layout_padding_bottom">20dp</dimen>
+    <dimen name="setting_wifi_layout_padding_left">20dp</dimen>
+    <dimen name="setting_wifi_layout_padding_right">20dp</dimen>
+    <!-- 设置界面公共 -->
+    <dimen name="setting_item_margin">10dp</dimen>
+    <dimen name="setting_item_margin_big">20dp</dimen>
+    <dimen name="setting_item_margin_super">40dp</dimen>
+    <dimen name="setting_edit_checkbox_width">40dp</dimen>
+    <dimen name="setting_edit_height">40dp</dimen>
+    <dimen name="setting_btn_margin_big">57.7dp</dimen>
+    <dimen name="setting_btn_bottom_margin">40dp</dimen>
+    <dimen name="setting_btn_bottom_layout_paddding">10dp</dimen>
+    <dimen name="common_btn_margin_small">10dp</dimen>
+    <dimen name="setting_btn_height">48dp</dimen>
+    <dimen name="common_margin_small">10dp</dimen>
+    <dimen name="common_margin_big">20dp</dimen>
+    <dimen name="setting_guid_icon_width">128dp</dimen>
+    <dimen name="setting_guid_icon_height">128dp</dimen>
+    <dimen name="setting_loading_icon_width">47dp</dimen>
+    <dimen name="setting_loading_icon_height">47dp</dimen>
+    <!-- 输入框内间距 -->
+    <dimen name="common_edit_padding_left">10dp</dimen>
+    <dimen name="common_edit_padding_bottom">5dp</dimen>
+    <dimen name="common_edit_padding_top">10dp</dimen>
+    <dimen name="common_edit_padding_right">5dp</dimen>
+    <!-- 密码icon间距 -->
+    <dimen name="common_edit_pwd_icon_margin_left">5dp</dimen>
+    <dimen name="common_edit_pwd_icon_margin_right">5dp</dimen>
+    <!-- 修改路由器管理密码 -->
+    <dimen name="setting_admin_pwd_layout_margin">20dp</dimen>
+    <dimen name="setting_admin_pwd_layout_margin_vertical">20dp</dimen>
+
+    <!-- 恢复出厂设置 -->
+    <dimen name="setting_router_reset_layout_height">50dp</dimen>
+    <dimen name="setting_router_reset_layout_padding_left">10dp</dimen>
+    <dimen name="setting_router_reset_layout_padding_right">10dp</dimen>
+    <dimen name="setting_router_reset_layout_padding_top">10dp</dimen>
+    <dimen name="setting_router_reset_layout_padding_bottom">10dp</dimen>
+    <dimen name="setting_router_reset_item_icon_right_margin">15dp</dimen>
+    <!-- dialog组件间距 -->
+    <dimen name="common_dialog_title_margin_top">20dp</dimen>
+    <dimen name="common_dialog_title_margin_bottom">20dp</dimen>
+    <dimen name="common_dialog_margin_bottom">10dp</dimen>
+    <dimen name="common_dialog_margin_left">11dp</dimen>
+    <dimen name="common_dialog_margin_right">11dp</dimen>
+    <dimen name="common_dialog_margin_item">10dp</dimen>
+    <dimen name="common_dialog_margin_layout">45dp</dimen>
+
+    <!-- 输入框眼睛按钮宽度 -->
+    <dimen name="setting_edit_checkbox_icon_width">38dp</dimen>
+    <dimen name="setting_edit_toast_margin_right">69dp</dimen>
+    <dimen name="setting_edit_toast_icon_margin_right">79dp</dimen>
+    
+    <!-- progressbar宽度/长度 -->
+    <dimen name="common_progressbar_length">30dp</dimen>
+    
+    <!-- 分级间距 -->
+    <dimen name="common_item_margin_big">40dp</dimen>
+    <dimen name="common_item_margin_normal">20dp</dimen>
+    <dimen name="common_item_margin_small">10dp</dimen>
+    
+    <!-- 蓝色可点击文字 ，点击扩充间距 -->
+ 	<dimen name="common_link_text_blue_margin">10dp</dimen>
+ 	
+ 	<!-- 网络设置 -->
+ 	<dimen name="net_config_content_margin_title">25dp</dimen>
+  
+ 	<!-- 关于 -->
+  	<dimen name="setting_about_declaration_layout_margin_bottom">15dp</dimen>
+  	<dimen name="setting_about_rights_view_margin_top">35dp</dimen>
+  	<dimen name="setting_about_version_view_margin_top">10dp</dimen>
+  	<dimen name="setting_about_right_text_size">10.8sp</dimen>
+  	<dimen name="setting_about_version_text_size">15.5sp</dimen>
+  	<dimen name="setting_about_app_name_text_size">17.5sp</dimen>
+ 	
+  	<!--云安全 -->
+ 	<dimen name="cloudsec_tab_height">53dp</dimen>
+ 	<dimen name="cloudsec_tab_title_height">32dp</dimen>
+ 	<dimen name="cloudsec_tab_margin_hor">15dp</dimen>
+ 	<dimen name="cloudsec_tab_toggle_margin_right">12dp</dimen>
+ 	<dimen name="cloudsec_tab_text_margin_bottom">8dp</dimen>
+ 	<dimen name="cloudsec_tab_text_ge_margin_left">2dp</dimen>
 </resources>

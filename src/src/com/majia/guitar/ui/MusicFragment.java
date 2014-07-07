@@ -11,6 +11,8 @@ import com.majia.guitar.service.DataService;
 import com.majia.guitar.service.MusicPlayService;
 import com.majia.guitar.service.DataService.DataBinder;
 import com.majia.guitar.service.DataService.IQueryMusicsCallback;
+import com.majia.guitar.ui.component.PullDownListView;
+import com.majia.guitar.ui.component.PullDownListView.OnRefreshListener;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -34,9 +36,12 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author panxu
  * @since 2013-12-15
  */
-public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnItemClickListener {
+public class MusicFragment extends Fragment implements IQueryMusicsCallback, 
+													   OnItemClickListener, 
+													   OnRefreshListener {
     
     private ListView mGuitarMusicListView;
+    private PullDownListView mPullDownListView;
     
     private ProgressBar mLoadingProgressBar;
     
@@ -63,10 +68,13 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View musicView = inflater.inflate(R.layout.music_fragment, container, false);
         
+        mPullDownListView = (PullDownListView) musicView.findViewById(R.id.pullDownView);
+        mPullDownListView.setOnRefreshListener(this);
+        
         mLoadingProgressBar = (ProgressBar) musicView.findViewById(R.id.loadingProgressBar);
         mLoadingProgressBar.setVisibility(View.VISIBLE);
         
-        mGuitarMusicListView = (ListView) musicView.findViewById(R.id.guitarMusicListView);
+        mGuitarMusicListView = (ListView) musicView.findViewById(android.R.id.list);
         mGuitarMusicListView.setVisibility(View.GONE);
         
         mGuitarMusicListView.setOnItemClickListener(this);
@@ -143,6 +151,8 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnI
         mLoadingProgressBar.setVisibility(View.GONE);
         mGuitarMusicListView.setVisibility(View.VISIBLE);
         mMusicListAdapter.update(musics);
+        
+        mPullDownListView.onRefreshComplete();
     }
 
     @Override
@@ -152,4 +162,22 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback, OnI
         intent.putExtra(MusicDetailActivity.MUSIC_ENTITY, musicEntity);
         startActivity(intent);
     }
+
+	@Override
+	public void onRefresh() {
+		if (mDataService == null) {
+			mDataServiceConnection = new DataServiceConnection();
+	        
+	        boolean result = getActivity().bindService(new Intent(getActivity(), DataService.class), 
+	                                   mDataServiceConnection, 
+	                                   Service.BIND_AUTO_CREATE);
+		} else {
+			mDataService.queryMusics(MusicFragment.this);
+		}
+	}
+
+	@Override
+	public void onLoadMore() {
+		
+	}
 }
