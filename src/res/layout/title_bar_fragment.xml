@@ -5,12 +5,15 @@
     android:background="@drawable/title_bg" >
 
     <ImageView
-        android:id="@+id/backImageView"
+        android:id="@+id/iconImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/titlebar_back_selector" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="@dimen/common_small_margin"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/main_title_bar_icon" />
 
     <TextView
         android:id="@+id/titleTextView"

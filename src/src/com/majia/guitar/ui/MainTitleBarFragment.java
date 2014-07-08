@@ -34,7 +34,6 @@ public class MainTitleBarFragment extends Fragment implements UpdateListener {
     private String mTitle;
     private boolean mIsShowBack;
     
-    private ImageView mBackImageView;
     private TextView mTitleTextView;
     private View mMoreLayout;
     private ImageView mMoreImageView;
@@ -107,15 +106,6 @@ public class MainTitleBarFragment extends Fragment implements UpdateListener {
         mTitleTextView = (TextView) titleView.findViewById(R.id.titleTextView);
         mTitleTextView.setText(mTitle);
         
-        mBackImageView = (ImageView) titleView.findViewById(R.id.backImageView);
-        
-        mBackImageView.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
         
         mMoreLayout = titleView.findViewById(R.id.moreLayout);
         mMoreImageView = (ImageView) titleView.findViewById(R.id.moreImageView);
@@ -123,12 +113,6 @@ public class MainTitleBarFragment extends Fragment implements UpdateListener {
         mMoreImageView.setOnClickListener(new MoreOnClickListener());
         
         mUpdateIndicatorImageView = (ImageView) titleView.findViewById(R.id.updateIndicatorImageView);
-        
-        if (mIsShowBack) {
-            mBackImageView.setVisibility(View.VISIBLE);
-        } else {
-            mBackImageView.setVisibility(View.GONE);
-        }
         
 
         	
