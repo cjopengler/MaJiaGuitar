@@ -3,22 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/appNameTextView"
+    <ImageView
+        android:id="@+id/appImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="学吉他APP"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/currentVersionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appNameTextView"
+        android:layout_below="@id/appImageView"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:text="TextView" />
 
     <Button
@@ -30,15 +29,21 @@
         android:layout_marginTop="10dp"
         android:text="检测新版本" />
 
+    <ScrollView
+        android:id="@+id/updateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/updateApkButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" >
+
         <LinearLayout
-            android:id="@+id/updateLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/updateApkButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
             android:orientation="vertical" >
-
+            
             <TextView
                 android:id="@+id/newVersionTextView"
                 android:layout_width="wrap_content"
@@ -51,7 +56,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
-
         </LinearLayout>
+    </ScrollView>
+
 
 </RelativeLayout>

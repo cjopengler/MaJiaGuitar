@@ -35,7 +35,7 @@ public class MaJiaGuitarActivity extends FragmentActivity {
 	        FragmentTransaction ft = fragmentManager.beginTransaction();
 	        
 	        Args titleBarArgs = Args.buidArgs()
-	                                .setTitle(R.string.yoga_guitar)
+	                                .setTitle(R.string.app_name)
 	                                .setShowBack(false);
 	        
 	        MainTitleBarFragment titleBarFragment = MainTitleBarFragment.newInstance(titleBarArgs);
