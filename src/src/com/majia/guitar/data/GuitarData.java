@@ -203,7 +203,7 @@ public class GuitarData implements IGuitarData {
     }
     
     public MusicEntity queryById(long id) {
-        String sql = DataOpenHelper.MusicColumn.MUSIC_ID + " = " + id;
+        String sql = DataOpenHelper.MusicColumn.ID + " = " + id;
         
         MusicEntity musicEntity = null;
         Cursor cursor = null;

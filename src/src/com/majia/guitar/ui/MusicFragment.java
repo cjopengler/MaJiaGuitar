@@ -110,6 +110,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
         super.onPause();
         Intent serviceIntent = new Intent(this.getActivity(), MusicPlayService.class);
         serviceIntent.setAction(MusicPlayService.CMD_STOP);
+        getActivity().startService(serviceIntent);
     }
     
     @Override
