@@ -21,13 +21,32 @@
         android:clickable="true"
         android:minHeight="@dimen/setting_item_min_height" >
 
-                <ImageView
-                    android:id="@+id/set_version_check_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/common_small_margin"
-                    android:src="@drawable/setting_icon_version_check" />
+        <RelativeLayout
+            android:id="@+id/versionIconLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/common_small_margin" >
+                    
+            <ImageView
+                android:id="@+id/set_version_check_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/setting_icon_version_check" />
+            
+            <ImageView
+                android:id="@+id/versionUpdateIndicatorImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/set_version_check_icon"
+                android:layout_alignTop="@id/set_version_check_icon"
+                android:src="@drawable/icon_news_down_bar_one" />
+
+        </RelativeLayout>
+
+                
 
                 <TextView
                     android:id="@+id/set_version_check"
@@ -36,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/common_small_margin"
-                    android:layout_toRightOf="@id/set_version_check_icon"
+                    android:layout_toRightOf="@id/versionIconLayout"
                     android:duplicateParentState="true"
                     android:text="@string/more_version_check" />
 
@@ -47,6 +66,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/common_small_margin"
                     android:src="@drawable/detail_indicator" />
+
+                
 
             </RelativeLayout>
     

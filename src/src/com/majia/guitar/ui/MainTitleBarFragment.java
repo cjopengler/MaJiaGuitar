@@ -97,6 +97,14 @@ public class MainTitleBarFragment extends Fragment implements UpdateListener {
         
         mIsShowBack = args.getBoolean(SHOW_BACK_ARG, false);
         
+        UpdateApkVersion.getInstance().registListener(this);
+    }
+    
+    @Override
+    public void onDestroy() {
+    	UpdateApkVersion.getInstance().unregistListener(this);
+    	
+    	super.onDestroy();
     }
 
     @Override

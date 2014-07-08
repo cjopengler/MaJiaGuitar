@@ -5,8 +5,12 @@ package com.majia.guitar.ui;
 
 import java.util.List;
 
+import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
+import com.majia.guitar.data.ApkVersion;
+import com.majia.guitar.data.IUpdateApkVersion.UpdateListener;
 import com.majia.guitar.data.MusicEntity;
+import com.majia.guitar.data.UpdateApkVersion;
 import com.majia.guitar.service.DataService;
 import com.majia.guitar.service.MusicPlayService;
 import com.majia.guitar.service.DataService.DataBinder;
@@ -21,6 +25,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +43,8 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class MusicFragment extends Fragment implements IQueryMusicsCallback, 
 													   OnItemClickListener, 
-													   OnRefreshListener {
+													   OnRefreshListener,
+													   UpdateListener {
     
     private ListView mGuitarMusicListView;
     private PullDownListView mPullDownListView;
@@ -50,6 +56,8 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
     
     
     private GuitarMusicListAdapter mMusicListAdapter;
+    
+    private final Handler mUIHandler = new Handler(Looper.getMainLooper());
     
     
     public static MusicFragment newInstance() {
@@ -97,6 +105,13 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
                                    Service.BIND_AUTO_CREATE);
         
         Log.d("TAG", "result is " + result);
+        
+        ApkVersion apkVersion = UpdateApkVersion.getInstance().getApkVersion();
+        if (apkVersion.versionCode > MaJiaGuitarApplication.getInstance().getVersionCode()) {
+        	//弹出升级提示
+        	startActivity(new Intent(getActivity(), VersionInfoActivity.class));
+        	
+        }
     }
     
     @Override
@@ -180,5 +195,19 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
 	@Override
 	public void onLoadMore() {
 		
+	}
+
+	@Override
+	public void onUpdate(ApkVersion apkVersion) {
+		mUIHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (getActivity() != null && isResumed()) {
+					//弹出升级提示
+		        	startActivity(new Intent(getActivity(), VersionInfoActivity.class));
+				}
+			}
+		});
 	}
 }
