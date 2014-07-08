@@ -164,7 +164,7 @@ public class MainTitleBarFragment extends Fragment implements UpdateListener {
 		public void onClick(View arg0) {
 			mUpdateIndicatorImageView.setVisibility(View.GONE);
 			
-			startActivity(new Intent(getActivity(), MoreActivity.class));
+			startActivity(new Intent(getActivity(), SettingActivity.class));
 		}
 		
 	}

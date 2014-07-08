@@ -49,7 +49,7 @@
         <service android:name=".service.ApkUpdateService"
             ></service>
         
-        <activity android:name=".ui.MoreActivity"
+        <activity android:name=".ui.SettingActivity"
             android:screenOrientation="portrait" ></activity>
         
         <activity android:name=".ui.VersionInfoActivity"

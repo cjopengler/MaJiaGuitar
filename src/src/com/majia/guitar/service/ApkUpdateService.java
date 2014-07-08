@@ -83,7 +83,7 @@ public class ApkUpdateService extends MultiThreadIntentService {
 					apkVersion = new ApkVersion(apkVersionJson);
 					UpdateApkVersion.getInstance().setApkVersion(apkVersion);
 					
-					
+					result = RequestResult.SUCCESS;
 				} catch (JsonSyntaxException e) {
 					Assert.assertOnly("json error: " + e.getMessage());
 				} catch (ClientProtocolException e) {

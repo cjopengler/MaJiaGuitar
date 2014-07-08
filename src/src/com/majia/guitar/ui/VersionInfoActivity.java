@@ -22,7 +22,7 @@ public class VersionInfoActivity extends FragmentActivity {
 		        FragmentTransaction ft = fragmentManager.beginTransaction();
 		        
 		        Args titleBarArgs = Args.buidArgs()
-		                                .setTitle(R.string.yoga_guitar)
+		                                .setTitle(R.string.more_version_check)
 		                                .setShowBack(true);
 		        
 		        CommonTitleBarFragment titleBarFragment = CommonTitleBarFragment.newInstance(titleBarArgs);

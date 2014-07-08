@@ -1,5 +1,10 @@
 <resources>
 
+    <dimen name="common_big_margin">30dp</dimen>
+    <dimen name="common_mid_margin">20dp</dimen>
+    <dimen name="common_small_margin">10dp</dimen>
+    
+    <dimen name="setting_item_min_height">48dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="title_bar_height">48dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -97,92 +102,10 @@
     <dimen name="toggle_width">65.5dp</dimen>
     <dimen name="toggle_height">28dp</dimen>
     <!-- 下载界面 -->
-    <dimen name="download_delete_bg_height">60dp</dimen>
-    <dimen name="download_delete_btn_height">40dp</dimen>
-    <dimen name="download_delete_bg_padding">10dp</dimen>
-    <!-- wifi设置界面 -->
-    <dimen name="setting_wifi_layout_margin_top">20dp</dimen>
-    <dimen name="setting_wifi_layout_padding_top">20dp</dimen>
-    <dimen name="setting_wifi_layout_padding_bottom">20dp</dimen>
-    <dimen name="setting_wifi_layout_padding_left">20dp</dimen>
-    <dimen name="setting_wifi_layout_padding_right">20dp</dimen>
-    <!-- 设置界面公共 -->
-    <dimen name="setting_item_margin">10dp</dimen>
-    <dimen name="setting_item_margin_big">20dp</dimen>
-    <dimen name="setting_item_margin_super">40dp</dimen>
-    <dimen name="setting_edit_checkbox_width">40dp</dimen>
-    <dimen name="setting_edit_height">40dp</dimen>
-    <dimen name="setting_btn_margin_big">57.7dp</dimen>
-    <dimen name="setting_btn_bottom_margin">40dp</dimen>
-    <dimen name="setting_btn_bottom_layout_paddding">10dp</dimen>
-    <dimen name="common_btn_margin_small">10dp</dimen>
-    <dimen name="setting_btn_height">48dp</dimen>
-    <dimen name="common_margin_small">10dp</dimen>
-    <dimen name="common_margin_big">20dp</dimen>
-    <dimen name="setting_guid_icon_width">128dp</dimen>
-    <dimen name="setting_guid_icon_height">128dp</dimen>
-    <dimen name="setting_loading_icon_width">47dp</dimen>
-    <dimen name="setting_loading_icon_height">47dp</dimen>
-    <!-- 输入框内间距 -->
-    <dimen name="common_edit_padding_left">10dp</dimen>
-    <dimen name="common_edit_padding_bottom">5dp</dimen>
-    <dimen name="common_edit_padding_top">10dp</dimen>
-    <dimen name="common_edit_padding_right">5dp</dimen>
-    <!-- 密码icon间距 -->
-    <dimen name="common_edit_pwd_icon_margin_left">5dp</dimen>
-    <dimen name="common_edit_pwd_icon_margin_right">5dp</dimen>
-    <!-- 修改路由器管理密码 -->
-    <dimen name="setting_admin_pwd_layout_margin">20dp</dimen>
-    <dimen name="setting_admin_pwd_layout_margin_vertical">20dp</dimen>
 
-    <!-- 恢复出厂设置 -->
-    <dimen name="setting_router_reset_layout_height">50dp</dimen>
-    <dimen name="setting_router_reset_layout_padding_left">10dp</dimen>
-    <dimen name="setting_router_reset_layout_padding_right">10dp</dimen>
-    <dimen name="setting_router_reset_layout_padding_top">10dp</dimen>
-    <dimen name="setting_router_reset_layout_padding_bottom">10dp</dimen>
-    <dimen name="setting_router_reset_item_icon_right_margin">15dp</dimen>
-    <!-- dialog组件间距 -->
-    <dimen name="common_dialog_title_margin_top">20dp</dimen>
-    <dimen name="common_dialog_title_margin_bottom">20dp</dimen>
-    <dimen name="common_dialog_margin_bottom">10dp</dimen>
-    <dimen name="common_dialog_margin_left">11dp</dimen>
-    <dimen name="common_dialog_margin_right">11dp</dimen>
-    <dimen name="common_dialog_margin_item">10dp</dimen>
-    <dimen name="common_dialog_margin_layout">45dp</dimen>
-
-    <!-- 输入框眼睛按钮宽度 -->
-    <dimen name="setting_edit_checkbox_icon_width">38dp</dimen>
-    <dimen name="setting_edit_toast_margin_right">69dp</dimen>
-    <dimen name="setting_edit_toast_icon_margin_right">79dp</dimen>
-    
     <!-- progressbar宽度/长度 -->
     <dimen name="common_progressbar_length">30dp</dimen>
-    
-    <!-- 分级间距 -->
-    <dimen name="common_item_margin_big">40dp</dimen>
-    <dimen name="common_item_margin_normal">20dp</dimen>
-    <dimen name="common_item_margin_small">10dp</dimen>
-    
-    <!-- 蓝色可点击文字 ，点击扩充间距 -->
- 	<dimen name="common_link_text_blue_margin">10dp</dimen>
  	
- 	<!-- 网络设置 -->
- 	<dimen name="net_config_content_margin_title">25dp</dimen>
   
- 	<!-- 关于 -->
-  	<dimen name="setting_about_declaration_layout_margin_bottom">15dp</dimen>
-  	<dimen name="setting_about_rights_view_margin_top">35dp</dimen>
-  	<dimen name="setting_about_version_view_margin_top">10dp</dimen>
-  	<dimen name="setting_about_right_text_size">10.8sp</dimen>
-  	<dimen name="setting_about_version_text_size">15.5sp</dimen>
-  	<dimen name="setting_about_app_name_text_size">17.5sp</dimen>
- 	
-  	<!--云安全 -->
- 	<dimen name="cloudsec_tab_height">53dp</dimen>
- 	<dimen name="cloudsec_tab_title_height">32dp</dimen>
- 	<dimen name="cloudsec_tab_margin_hor">15dp</dimen>
- 	<dimen name="cloudsec_tab_toggle_margin_right">12dp</dimen>
- 	<dimen name="cloudsec_tab_text_margin_bottom">8dp</dimen>
- 	<dimen name="cloudsec_tab_text_ge_margin_left">2dp</dimen>
+
 </resources>

@@ -19,7 +19,7 @@ import android.view.Window;
  * @author panxu
  * @since 2014-5-25
  */
-public class MoreActivity extends FragmentActivity {
+public class SettingActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class MoreActivity extends FragmentActivity {
 		        FragmentTransaction ft = fragmentManager.beginTransaction();
 		        
 		        Args titleBarArgs = Args.buidArgs()
-		                                .setTitle(R.string.yoga_guitar)
+		                                .setTitle(R.string.setting)
 		                                .setShowBack(true);
 		        
 		        CommonTitleBarFragment titleBarFragment = CommonTitleBarFragment.newInstance(titleBarArgs);
@@ -46,7 +46,7 @@ public class MoreActivity extends FragmentActivity {
 			
 			@Override
 			public void onClick(View view) {
-				startActivity(new Intent(MoreActivity.this, VersionInfoActivity.class));
+				startActivity(new Intent(SettingActivity.this, VersionInfoActivity.class));
 			}
 		});
 		 

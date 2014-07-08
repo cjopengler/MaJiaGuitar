@@ -14,22 +14,28 @@
         android:id="@+id/set_version_check_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="@dimen/common_small_margin"
+        android:layout_marginRight="@dimen/common_small_margin"
+        android:layout_marginTop="@dimen/common_small_margin"
         android:background="@drawable/setting_item_bottom_selector"
-        android:clickable="true" >
+        android:clickable="true"
+        android:minHeight="@dimen/setting_item_min_height" >
 
                 <ImageView
                     android:id="@+id/set_version_check_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/common_small_margin"
                     android:src="@drawable/setting_icon_version_check" />
 
                 <TextView
                     android:id="@+id/set_version_check"
+                    style="@style/common_mid_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/common_small_margin"
                     android:layout_toRightOf="@id/set_version_check_icon"
                     android:duplicateParentState="true"
                     android:text="@string/more_version_check" />
@@ -39,7 +45,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/common_small_margin"
                     android:src="@drawable/detail_indicator" />
+
             </RelativeLayout>
     
     

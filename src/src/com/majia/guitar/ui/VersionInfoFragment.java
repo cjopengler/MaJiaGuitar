@@ -270,10 +270,28 @@ public class VersionInfoFragment extends Fragment implements IDownloadListener {
 			if (fragment != null && fragment.isAdded()) {
 				fragment.mProgressDialog.dismiss();
 				
-				if (content.versionCode == MaJiaGuitarApplication.getInstance().getVersionCode()) {
-					Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.current_is_newest_version, Toast.LENGTH_SHORT).show();
+				if (result == RequestResult.SUCCESS) {
+				
+					if (content.versionCode == MaJiaGuitarApplication.getInstance().getVersionCode()) {
+						Toast.makeText(MaJiaGuitarApplication.getInstance(), R.string.current_is_newest_version, Toast.LENGTH_SHORT).show();
+					}
+					fragment.setApkUpdateUI();
+				} else {
+					switch (result) {
+					case FAIL_HTTP:
+						Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+									   R.string.about_network_error, 
+									   Toast.LENGTH_LONG).show();
+						break;
+
+					case FAIL:
+					default:
+						Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+								   R.string.about_error, 
+								   Toast.LENGTH_LONG).show();
+						break;
+					}
 				}
-				fragment.setApkUpdateUI();
 				
 			}
 		}
