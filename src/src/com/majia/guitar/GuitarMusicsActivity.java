@@ -13,43 +13,39 @@ import com.majia.guitar.util.MusicLog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class MaJiaGuitarActivity extends FragmentActivity {
+public class GuitarMusicsActivity extends FragmentActivity {
     private static final String TAG = "MaJiaGuitarActivity";
-    
-    private static final long DISPLAY_TIME_OUT = 2500;
 
-    private final Handler mUIHandler = new Handler(Looper.getMainLooper());
+   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         
-        setContentView(R.layout.majia_guitar_activity);
+        setContentView(R.layout.guitar_music_activity);
         
-      
-        Intent apkUpdateCheckIntent = new Intent(this, ApkUpdateService.class);
+        if (savedInstanceState == null) {
         
-        apkUpdateCheckIntent.setAction(ApkUpdateService.CHECK_APK_UPDATE_ACTION);
-        startService(apkUpdateCheckIntent);
-       
+	        FragmentManager fragmentManager = getSupportFragmentManager();
+	        FragmentTransaction ft = fragmentManager.beginTransaction();
+	        
+	        Args titleBarArgs = Args.buidArgs()
+	                                .setTitle(R.string.app_name)
+	                                .setShowBack(false);
+	        
+	        MainTitleBarFragment titleBarFragment = MainTitleBarFragment.newInstance(titleBarArgs);
+	        
+	        ft.add(R.id.titleBarContainer, titleBarFragment);
+	        ft.commit();
+        }
         
-        mUIHandler.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				finish();
-				startActivity(new Intent(MaJiaGuitarActivity.this, GuitarMusicsActivity.class));
-				
-			}
-		}, DISPLAY_TIME_OUT);
+        
     }
 
 }
