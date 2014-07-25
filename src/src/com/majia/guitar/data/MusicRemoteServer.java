@@ -81,41 +81,6 @@ public class MusicRemoteServer implements IRemoteServer {
     
     
     
-    private static class MuscJsonListResponseHandler implements ResponseHandler<List<MusicTempJson>> {
-
-        private static final String TAG = "MuscJsonListResponseHandler";
-        
-        @Override
-        public List<MusicTempJson> handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-            
-            List<MusicTempJson> result = new ArrayList<MusicTempJson>();
-            
-            int statusCode = response.getStatusLine().getStatusCode();
-
-            if (statusCode >= 200 && statusCode < 300) {
-
-                String entity = EntityUtils.toString(response.getEntity(), "UTF-8");
-
-                Gson gson = new Gson();
-
-  
-
-                TypeToken<List<MusicTempJson>> typeToken = new TypeToken<List<MusicTempJson>>() {};
-
-                
-                
-                result = gson.fromJson(entity, typeToken.getType());
-
-            } else {
-                MusicLog.e(TAG, "JsonResonponsHandler: get status error " + statusCode);
-            }
-            
-            return result;
-        }
-        
-    }
-
-
     @SuppressLint("DefaultLocale")
     @Override
     public ApkVersionJson queryApkVersion(int versionCode) throws JsonSyntaxException, ClientProtocolException, IOException {

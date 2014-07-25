@@ -85,7 +85,7 @@ public class ApkUpdateService extends MultiThreadIntentService {
 					
 					result = RequestResult.SUCCESS;
 				} catch (JsonSyntaxException e) {
-					Assert.assertOnly("json error: " + e.getMessage());
+				    result = RequestResult.FAIL_HTTP;
 				} catch (ClientProtocolException e) {
 					result = RequestResult.FAIL_HTTP;
 				} catch (IOException e) {

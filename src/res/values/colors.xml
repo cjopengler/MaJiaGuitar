@@ -3,4 +3,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FFFF6600</color>
     
+    <color name="darker_transparent">#C1000000</color>
+    
 </resources>

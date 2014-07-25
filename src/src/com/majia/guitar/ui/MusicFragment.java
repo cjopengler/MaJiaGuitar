@@ -20,12 +20,15 @@ import com.majia.guitar.ui.component.PullDownListView.OnRefreshListener;
 
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +62,7 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
     
     private final Handler mUIHandler = new Handler(Looper.getMainLooper());
     
+    private WakeLock mWakeLock;
     
     public static MusicFragment newInstance() {
         return new MusicFragment();
@@ -68,6 +72,9 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        PowerManager pm = (PowerManager)getActivity().getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                   PowerManager.ON_AFTER_RELEASE, "MusicFragment");
         
         
     }
@@ -117,12 +124,15 @@ public class MusicFragment extends Fragment implements IQueryMusicsCallback,
     @Override
     public void onResume() {
         super.onResume();
+        mWakeLock.acquire();
+        
         
     }
     
     @Override
     public void onPause() {
         super.onPause();
+        mWakeLock.release();
         Intent serviceIntent = new Intent(this.getActivity(), MusicPlayService.class);
         serviceIntent.setAction(MusicPlayService.CMD_STOP);
         getActivity().startService(serviceIntent);
