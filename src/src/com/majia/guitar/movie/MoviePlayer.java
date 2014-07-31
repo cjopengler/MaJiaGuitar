@@ -160,6 +160,8 @@ public class MoviePlayer implements
             mVideoView.suspend();
             mHasPaused = true;
         } else {
+            
+            startVideo();
         }
     }
 

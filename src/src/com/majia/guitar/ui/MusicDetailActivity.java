@@ -11,6 +11,7 @@ import com.majia.guitar.R;
 import com.majia.guitar.data.GuitarData;
 import com.majia.guitar.data.GuitarData.IGuitarDataListener;
 import com.majia.guitar.data.MusicEntity;
+import com.majia.guitar.movie.MovieActivity;
 import com.majia.guitar.ui.CommonTitleBarFragment.Args;
 import com.majia.guitar.util.SDCardUtil;
 
@@ -298,8 +299,8 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
     private void playVideo(String localUri) {
         Uri uri = Uri.parse(localUri);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
+        //Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(this, MovieActivity.class);
         intent.setDataAndType(uri, "video/mp4");
 
         try {
