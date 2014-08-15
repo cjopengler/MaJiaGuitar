@@ -4,5 +4,6 @@
     <color name="orange">#FFFF6600</color>
     
     <color name="darker_transparent">#C1000000</color>
+    <color name="gray">#FFC8C8C8</color>
     
 </resources>

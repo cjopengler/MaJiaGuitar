@@ -67,13 +67,26 @@
         android:paddingLeft="@dimen/common_mid_margin"
         android:paddingRight="@dimen/common_mid_margin"
         android:text="检测新版本" />
+    
+    <TextView
+        android:id="@+id/instrumentTextView"
+        style="@style/app_instrument_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/common_small_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/app_instrument" />
 
     <ScrollView
         android:id="@+id/updateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/instrumentTextView"
         android:layout_below="@id/updateApkButton"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp" >
@@ -100,6 +113,7 @@
 
         </LinearLayout>
     </ScrollView>
-
+    
+    
 
 </RelativeLayout>

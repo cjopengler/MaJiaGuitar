@@ -16,7 +16,9 @@
 
 package com.majia.guitar.movie;
 
+import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
+import com.majia.guitar.data.MusicEntity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -38,9 +40,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ShareActionProvider;
+import android.widget.Toast;
 
 
 /**
@@ -53,6 +58,7 @@ import android.widget.ShareActionProvider;
 public class MovieActivity extends Activity {
     @SuppressWarnings("unused")
     private static final String TAG = "MovieActivity";
+    public static final String KEY_MUSIC_ENTIRY = "music-entiry";
     public static final String KEY_LOGO_BITMAP = "logo-bitmap";
     public static final String KEY_TREAT_UP_AS_BACK = "treat-up-as-back";
 
@@ -60,6 +66,10 @@ public class MovieActivity extends Activity {
     private boolean mFinishOnCompletion;
     private Uri mUri;
     private boolean mTreatUpAsBack;
+    
+    private MusicEntity mMusicEntity;
+    
+   
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setSystemUiVisibility(View rootView) {
@@ -74,20 +84,26 @@ public class MovieActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.movie_view);
+        
+       
+        
+        
+        
+        
         View rootView = findViewById(R.id.movie_view_root);
 
         setSystemUiVisibility(rootView);
 
         Intent intent = getIntent();
-        initializeActionBar(intent);
+       
+        mMusicEntity = intent.getParcelableExtra(KEY_MUSIC_ENTIRY);
+        
         mFinishOnCompletion = intent.getBooleanExtra(
                 MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
         mTreatUpAsBack = intent.getBooleanExtra(KEY_TREAT_UP_AS_BACK, false);
-        mPlayer = new MoviePlayer(rootView, this, intent.getData(), savedInstanceState,
+        mPlayer = new MoviePlayer(rootView, this, intent.getData(), mMusicEntity, savedInstanceState,
                 !mFinishOnCompletion) {
             @Override
             public void onCompletion() {
@@ -116,45 +132,6 @@ public class MovieActivity extends Activity {
     }
 
 
-    private void initializeActionBar(Intent intent) {
-        mUri = intent.getData();
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP,
-                ActionBar.DISPLAY_HOME_AS_UP);
-
-        String title = intent.getStringExtra(Intent.EXTRA_TITLE);
-        if (title != null) {
-            actionBar.setTitle(title);
-        } else {
-            // Displays the filename as title, reading the filename from the
-            // interface: {@link android.provider.OpenableColumns#DISPLAY_NAME}.
-            AsyncQueryHandler queryHandler =
-                    new AsyncQueryHandler(getContentResolver()) {
-                @Override
-                protected void onQueryComplete(int token, Object cookie,
-                        Cursor cursor) {
-                    try {
-                        if ((cursor != null) && cursor.moveToFirst()) {
-                            String displayName = cursor.getString(0);
-
-                            // Just show empty title if other apps don't set
-                            // DISPLAY_NAME
-                            actionBar.setTitle((displayName == null) ? "" :
-                                    displayName);
-                        }
-                    } finally {
-                        Utils.closeSilently(cursor);
-                    }
-                }
-            };
-            queryHandler.startQuery(0, null, mUri,
-                    new String[] {OpenableColumns.DISPLAY_NAME}, null, null,
-                    null);
-        }
-    }
-
-   
 
     
     @Override

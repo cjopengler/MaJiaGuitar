@@ -302,6 +302,7 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
         //Intent intent = new Intent(Intent.ACTION_VIEW);
         Intent intent = new Intent(this, MovieActivity.class);
         intent.setDataAndType(uri, "video/mp4");
+        intent.putExtra(MovieActivity.KEY_MUSIC_ENTIRY, mMusicEntity);
 
         try {
         	startActivity(intent);

@@ -25,6 +25,7 @@
     <string name="software">软件</string>
     <string name="download_finish">下载完成</string>
     <string name="current_is_newest_version">当前已经是最新版本</string>
+    <string name="app_instrument">哈里波弹唱开发团队 版权所有\nAll Rights Reserved.</string>
     
     <string name="video_instrument">由于使用的服务器是按照流量收费的，所以请大家尽量在自己的存储卡允许的情况下，先下载后播放，这样能省些费用；如果存储卡较小，使用在线播放</string>
     <string name="video_local_play">本地播放</string>

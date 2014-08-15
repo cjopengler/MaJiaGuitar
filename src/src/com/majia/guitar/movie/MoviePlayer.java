@@ -17,6 +17,7 @@
 package com.majia.guitar.movie;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,17 +34,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
+import android.widget.FrameLayout.LayoutParams;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+import com.majia.guitar.MaJiaGuitarApplication;
 import com.majia.guitar.R;
+import com.majia.guitar.data.MusicEntity;
 
 public class MoviePlayer implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener,
@@ -76,6 +86,7 @@ public class MoviePlayer implements
     private final Handler mHandler = new Handler();
     private final AudioBecomingNoisyReceiver mAudioBecomingNoisyReceiver;
     private final MovieControllerOverlay mController;
+    private final MusicEntity mMusicEntity;
 
     private long mResumeableTime = Long.MAX_VALUE;
     private int mVideoPosition = 0;
@@ -87,6 +98,8 @@ public class MoviePlayer implements
 
     // If the time bar is visible.
     private boolean mShowing;
+    
+    private TextView mMusicTextView;
 
     private final Runnable mPlayingChecker = new Runnable() {
         @Override
@@ -108,14 +121,33 @@ public class MoviePlayer implements
     };
 
     public MoviePlayer(View rootView, final MovieActivity movieActivity,
-            Uri videoUri, Bundle savedInstance, boolean canReplay) {
-        mContext = movieActivity.getApplicationContext();
+            Uri videoUri, MusicEntity musicEntity, Bundle savedInstance, boolean canReplay) {
+        mContext = movieActivity;
         mRootView = rootView;
         mVideoView = (VideoView) rootView.findViewById(R.id.surface_view);
         mUri = videoUri;
+        mMusicEntity = musicEntity;
 
         mController = new MovieControllerOverlay(mContext);
+        
+        LinearLayout.LayoutParams layoutParams = 
+                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 
+                                              LayoutParams.WRAP_CONTENT);
+        
+        /*
+        layoutParams.addRule(RelativeLayout.BELOW, R.id.movieTopControlLayout);
+        ((ViewGroup)rootView).addView(mController.getView(), layoutParams);*/
         ((ViewGroup)rootView).addView(mController.getView());
+        
+        
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        View topView = layoutInflater.inflate(R.layout.movie_player_title_bar, null);
+        ((ViewGroup)rootView).addView(topView, layoutParams);
+        
+        
+        mMusicTextView = (TextView) rootView.findViewById(R.id.musicTextView);
+        mMusicTextView.setText(mMusicEntity.getMusicAbstract());
+        
         mController.setListener(this);
         mController.setCanReplay(canReplay);
 
