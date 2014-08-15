@@ -215,8 +215,23 @@ public class MusicDetailActivity extends FragmentActivity implements IGuitarData
                     break;
                     
                 case DownloadManager.STATUS_RUNNING:
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+                                   getString(R.string.video_is_downloading, 
+                                   mMusicEntity.getName()), 
+                                   Toast.LENGTH_LONG).show();
+                    break;
                 case DownloadManager.STATUS_PENDING:
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+                            getString(R.string.video_is_wait_download, 
+                            mMusicEntity.getName()), 
+                            Toast.LENGTH_LONG).show();
+                    break;
                 case DownloadManager.STATUS_PAUSED:
+                    Toast.makeText(MaJiaGuitarApplication.getInstance(), 
+                            getString(R.string.video_is_paused_download, 
+                            mMusicEntity.getName()), 
+                            Toast.LENGTH_LONG).show();
+                    break;
                 case DownloadManager.STATUS_FAILED:
                 {
                     switch (reason) {

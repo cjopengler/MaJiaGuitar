@@ -32,8 +32,9 @@
     <string name="video_online_play">在线播放</string>
     <string name="video_download">视频下载</string>
     <string name="music_detail">和弦详情</string>
-    <string name="video_is_downloading">%1$s正在下载</string>
-    <string name="video_is_wait_download">%1$s正在等待下载</string>
+    <string name="video_is_downloading">%1$s正在下载，进入状态栏查看状态</string>
+    <string name="video_is_wait_download">%1$s正在等待下载，进入状态栏查看状态</string>
+    <string name="video_is_paused_download">%1$s下载被暂停，进入状态栏查看状态</string>
     <string name="video_activity_not_found">没有找视频播放软件</string>
     
     <string name="about_current_version">当前版本：%1$s</string>
