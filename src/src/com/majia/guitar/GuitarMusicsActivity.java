@@ -53,14 +53,14 @@ public class GuitarMusicsActivity extends FragmentActivity {
         // "api_key")
         // 通过share preference实现的绑定标志开关，如果已经成功绑定，就取消这次绑定
         
-       /* if (!PushUtils.hasBind(getApplicationContext())) {
-            PushManager.startWork(getApplicationContext(),
-                    PushConstants.LOGIN_TYPE_API_KEY,
-                    PushUtils.getMetaValue(GuitarMusicsActivity.this, "api_key"));
-            // Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
-            // PushManager.enableLbs(getApplicationContext());
-        }
-*/
+       
+        PushManager.startWork(getApplicationContext(),
+                PushConstants.LOGIN_TYPE_API_KEY,
+                PushUtils.getMetaValue(GuitarMusicsActivity.this, "api_key"));
+        // Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
+        // PushManager.enableLbs(getApplicationContext());
+        
+
         // Push: 设置自定义的通知样式，具体API介绍见用户手册，如果想使用系统默认的可以不加这段代码
         // 请在通知推送界面中，高级设置->通知栏样式->自定义样式，选中并且填写值：1，
         // 与下方代码中 PushManager.setNotificationBuilder(this, 1, cBuilder)中的第二个参数对应
