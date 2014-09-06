@@ -4,6 +4,8 @@
 package com.majia.guitar;
 
 
+import com.baidu.frontia.FrontiaApplication;
+
 import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -13,7 +15,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * @author panxu
  * @since 2014-2-24
  */
-public class MaJiaGuitarApplication extends Application {
+public class MaJiaGuitarApplication extends FrontiaApplication {
     private static volatile MaJiaGuitarApplication INSTANCE = null;
     
     @Override

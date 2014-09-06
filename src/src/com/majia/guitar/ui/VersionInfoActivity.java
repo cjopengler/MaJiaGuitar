@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.ImageView;
 
 public class VersionInfoActivity extends FragmentActivity {
+    public static final String NEW_APP_VERSION_ACTION = "com.majia.guitar.ui.VersionInfoActivity.NEW_APP_VERSION_ACTION";
 	private ImageView mBackImageView;
 	
 	@Override

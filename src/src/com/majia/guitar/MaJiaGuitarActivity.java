@@ -4,6 +4,7 @@ package com.majia.guitar;
 import java.io.File;
 import java.io.FileInputStream;
 
+import com.majia.guitar.log.GuitarLog;
 import com.majia.guitar.service.ApkUpdateService;
 import com.majia.guitar.ui.MusicFragment;
 import com.majia.guitar.ui.MainTitleBarFragment;
